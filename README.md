@@ -1,0 +1,1 @@
+Conduit is the final project of the internship, starting with designing the domain layer, then using the entity framework core for mapping and creating a database. Lastly, designing Web APIs
