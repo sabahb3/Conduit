@@ -6,6 +6,7 @@ public class Articles
     {
         Comments = new List<Comments>();
         UsersFavoriteArticles = new List<UsersFavoriteArticles>();
+        ArticlesTags = new List<ArticlesTags>();
     }
     public int Id { get; set; }
     public string Title { get; set; }
@@ -18,4 +19,5 @@ public class Articles
 
     public ICollection<Comments> Comments { get; set; }
     public ICollection<UsersFavoriteArticles> UsersFavoriteArticles { get; set; }
+    public ICollection<ArticlesTags> ArticlesTags { get; set; }
 }
