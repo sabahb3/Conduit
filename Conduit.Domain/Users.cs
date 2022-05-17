@@ -5,6 +5,7 @@ public class Users
     public Users()
     {
         Articles = new List<Articles>();
+        Comments = new List<Comments>();
     }
     public string Username { get; set; }
     public string Password { get; set; }
@@ -13,4 +14,5 @@ public class Users
     public string ProfilePicture { get; set; }
 
     public ICollection<Articles> Articles { get; set; }
+    public ICollection<Comments> Comments { get; set; }
 }
