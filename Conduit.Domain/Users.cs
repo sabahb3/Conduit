@@ -6,6 +6,7 @@ public class Users
     {
         Articles = new List<Articles>();
         Comments = new List<Comments>();
+        Followers = new List<Followers>();
     }
     public string Username { get; set; }
     public string Password { get; set; }
@@ -15,4 +16,5 @@ public class Users
 
     public ICollection<Articles> Articles { get; set; }
     public ICollection<Comments> Comments { get; set; }
+    public ICollection<Followers> Followers { get; set; }
 }
