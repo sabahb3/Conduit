@@ -8,6 +8,7 @@ public class Articles
     public string Body { get; set; }
     public DateTime Date { get; set; }
 
-    public string username { get; set; }
-    public Users user { get; set; }
+    public string Username { get; set; }
+    public Users User { get; set; }
+
 }
