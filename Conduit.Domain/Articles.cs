@@ -7,4 +7,7 @@ public class Articles
     public string Description { get; set; }
     public string Body { get; set; }
     public DateTime Date { get; set; }
+
+    public string username { get; set; }
+    public Users user { get; set; }
 }
