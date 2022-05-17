@@ -2,6 +2,10 @@ namespace Conduit.Domain;
 
 public class Articles
 {
+    public Articles()
+    {
+        Comments = new List<Comments>();
+    }
     public int Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
@@ -11,4 +15,5 @@ public class Articles
     public string Username { get; set; }
     public Users User { get; set; }
 
+    public ICollection<Comments> Comments { get; set; }
 }
