@@ -1,10 +1,11 @@
+using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using  Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Data.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly ConduitDbContext _conduitDbContext;
 
@@ -21,7 +22,19 @@ public class UserRepository
 
     public async Task CreateUser(Users createdUser)
     {
-        var user = await _conduitDbContext.Users.AddAsync(createdUser);
+        var isNewUser = !await IsExists(createdUser.Username);
+        if (isNewUser)
+        {
+            var user = await _conduitDbContext.Users.AddAsync(createdUser);
+        }
+    }
+
+    public async Task<bool> IsExists(string username)
+    {
+        var user =await _conduitDbContext.Users.FindAsync(username);
+        if (user == null)
+            return false;
+        return true;
     }
 
     public async Task<int> Save()
