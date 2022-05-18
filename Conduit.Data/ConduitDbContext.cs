@@ -79,6 +79,7 @@ public class ConduitDbContext : DbContext
         modelBuilder.Entity<Users>().Property(u => u.ProfilePicture)
             .HasDefaultValue(@"https://api.realworld.io/images/smiley-cyrus.jpeg");
         SeedingUsers(modelBuilder);
+        SeedingArticles(modelBuilder);
     }
 
     private void SeedingUsers(ModelBuilder modelBuilder)
@@ -102,5 +103,46 @@ public class ConduitDbContext : DbContext
                 Password = 0000.ToString(),
                 Email = "Hala@gmail.com"
             });
+    }
+
+    private void SeedingArticles(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Articles>().HasData(
+            new Articles
+            {
+                Id = 1,
+                Title = "Hello, and welcome",
+                Description = "How to say hello",
+                Body = @"We often start an English conversation with a simple “hello.”
+                         You may see someone you know, make eye contact with a stranger, 
+                         or start a phone conversation with this simple greeting. 
+                         You may be asking yourself: “What should I say instead of “hello?",
+                Date = new DateTime(2022,4,20),
+                Username = "Hala"
+                
+            },
+            new Articles
+            {
+                Id = 2,
+                Title = "How are you",
+                Description = "What do people really mean when they ask “How are you?",
+                Body = @"When people start off an English conversation with “How are you?” 
+                        they usually don’t expect you to go into much detail. 
+                        Think of the “How are you?” question as a simple way to get the conversation going.",
+                Date = new DateTime(2022,5,5),
+                Username = "Hala"
+            },
+            new Articles
+            {
+                Id = 3,
+                Title = "Be polite",
+                Description = "Want to be polite? Be a mirror.",
+                Body = @"In some situations it’s good to just repeat the same greeting 
+                        back to your conversation partner.When you are meeting someone for the first time, 
+                        it is considered polite to engage in this way.",
+                Date = new DateTime(2022,2,22),
+                Username = "Sabah"
+            }
+        );
     }
 }
