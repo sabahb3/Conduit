@@ -25,4 +25,8 @@
       <ProjectReference Include="..\Conduit.Domain\Conduit.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="IRepositories" />
+    </ItemGroup>
+
 </Project>
