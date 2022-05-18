@@ -39,8 +39,11 @@ public class UserRepositoryTest
         }
     }
 
-    [Fact]
-    public async Task ShouldNotAddNewUser()
+    [Theory]
+    [InlineData("sabah","sabahbaara@gmail.com")]
+    [InlineData("sabahb3","sabahBaara4@gmail.com")]
+    [InlineData("sabah","sabahbaara4@gmail.com")]
+    public async Task ShouldNotAddNewUser(string username,string email)
     {
         _optionsBuilder.UseInMemoryDatabase("AddUser");
         using (var context = new ConduitDbContext(_optionsBuilder.Options))
@@ -51,9 +54,9 @@ public class UserRepositoryTest
             var oldCount = await userRepo.GetCurrentUsersCount();
             var CreatedUser = new Users
             {
-                Username = "sabah",
+                Username = username,
                 Password = 1234.ToString(),
-                Email = "sabahbaara@gmail.com",
+                Email = email,
                 ProfilePicture = "test photo"
             };
             await userRepo.CreateUser(CreatedUser);
