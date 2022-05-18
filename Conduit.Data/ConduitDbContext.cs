@@ -80,6 +80,7 @@ public class ConduitDbContext : DbContext
             .HasDefaultValue(@"https://api.realworld.io/images/smiley-cyrus.jpeg");
         SeedingUsers(modelBuilder);
         SeedingArticles(modelBuilder);
+        SeedingComments(modelBuilder);
     }
 
     private void SeedingUsers(ModelBuilder modelBuilder)
@@ -142,6 +143,36 @@ public class ConduitDbContext : DbContext
                         it is considered polite to engage in this way.",
                 Date = new DateTime(2022,2,22),
                 Username = "Sabah"
+            }
+        );
+    }
+
+    private void SeedingComments(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Comments>().HasData(
+            new Comments
+            {
+              Id =1,
+              Date = new DateTime(2022,2,23),
+              Body = "Keep going",
+              Username = "Shaymaa",
+              ArticlesId = 1
+            },
+            new Comments
+            {
+                Id =2,
+                Date = new DateTime(2022,3,3),
+                Body = "Awesome",
+                Username = "Sabah",
+                ArticlesId = 1
+            },            
+            new Comments
+            {
+                Id =3,
+                Date = new DateTime(2022,5,5),
+                Body = "Keep going",
+                Username = "Shaymaa",
+                ArticlesId = 2
             }
         );
     }
