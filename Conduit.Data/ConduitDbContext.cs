@@ -1,5 +1,6 @@
 using Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace Conduit.Data;
@@ -77,5 +78,29 @@ public class ConduitDbContext : DbContext
         
         modelBuilder.Entity<Users>().Property(u => u.ProfilePicture)
             .HasDefaultValue(@"https://api.realworld.io/images/smiley-cyrus.jpeg");
+        SeedingUsers(modelBuilder);
+    }
+
+    private void SeedingUsers(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Users>().HasData(
+            new Users
+            {
+                Username = "sabah",
+                Password = 4050.ToString(),
+                Email = "sabahBaara4@gmail.com"
+            },
+            new Users
+            {
+                Username = "Shaymaa",
+                Password = 1234.ToString(),
+                Email = "shaymaaAshqar@gmail.com"
+            },
+            new Users
+            {
+                Username = "Hala",
+                Password = 0000.ToString(),
+                Email = "Hala@gmail.com"
+            });
     }
 }
