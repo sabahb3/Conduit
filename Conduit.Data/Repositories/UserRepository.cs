@@ -20,13 +20,26 @@ public class UserRepository : IUserRepository
         return currentUser;
     }
 
-    public async Task CreateUser(Users createdUser)
+    public async Task<(bool isValid,List<string> message)> CreateUser(Users createdUser)
     {
-        var isNewUser = !await IsExists(createdUser.Username);
-        if (isNewUser)
+        bool valid=true;
+        var message = new List<string>();
+        if (await IsExists(createdUser.Username))
         {
-            var user = await _conduitDbContext.Users.AddAsync(createdUser);
+            valid = false;
+            message.Add("username has already been taken");
         }
+
+        if (!await IsUniqueEmail(createdUser.Email))
+        {
+            valid = false;
+            message.Add("email has already been taken");
+        }
+        if (valid)
+        {
+            await _conduitDbContext.Users.AddAsync(createdUser);
+        }
+        return (valid, message);
     }
 
     public async Task<bool> IsExists(string username)
@@ -35,6 +48,14 @@ public class UserRepository : IUserRepository
         if (user == null)
             return false;
         return true;
+    }
+
+    public async Task<bool> IsUniqueEmail(string email)
+    {
+        var existingEmails = _conduitDbContext.Users.Select(u => u.Email).FirstOrDefault(u => u == email);
+        if (existingEmails == null)
+            return true;
+        return false;
     }
 
     public async Task<int> Save()
