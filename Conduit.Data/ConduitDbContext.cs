@@ -43,4 +43,13 @@ public class ConduitDbContext : DbContext
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         ConduitOptions = optionsBuilder;
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Tags>().HasKey(t => t.Tag);
+        modelBuilder.Entity<Users>().HasKey(u => u.Username);
+        modelBuilder.Entity<UsersFavoriteArticles>().HasKey(u => new { u.Username, u.ArticleId });
+        modelBuilder.Entity<Followers>().HasKey(u => new { u.Username, u.FollowerId });
+        modelBuilder.Entity<ArticlesTags>().HasKey(a => new { a.ArticleId, a.Tag });
+    }
 }
