@@ -51,5 +51,12 @@ public class ConduitDbContext : DbContext
         modelBuilder.Entity<UsersFavoriteArticles>().HasKey(u => new { u.Username, u.ArticleId });
         modelBuilder.Entity<Followers>().HasKey(u => new { u.Username, u.FollowerId });
         modelBuilder.Entity<ArticlesTags>().HasKey(a => new { a.ArticleId, a.Tag });
+        
+        modelBuilder.Entity<Comments>().HasOne(c => c.User)
+            .WithMany(u => u.Comments).HasForeignKey(c => c.Username);
+        modelBuilder.Entity<Comments>().HasOne(c => c.Article)
+            .WithMany(a => a.Comments).HasForeignKey(c => c.ArticlesId);
+        modelBuilder.Entity<Articles>().HasOne(a => a.User)
+            .WithMany(u => u.Articles).HasForeignKey(a => a.Username);
     }
 }
