@@ -65,4 +65,39 @@ public class UserRepositoryTest
             Assert.Equal(newCount, oldCount);
         }
     }
+    [Fact]
+    public async Task ShouldAddUsersList()
+    {
+        _optionsBuilder.UseInMemoryDatabase("AddUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            var oldCount = await userRepo.GetCurrentUsersCount();
+            var CreatedUser = new List<Users>
+            {
+                new Users
+                {
+                    Username = "aya",
+                    Password = 1234.ToString(),
+                    Email = "ayaJamal@gmail.com",
+                    ProfilePicture = "test photo"
+                },
+                new Users
+                {
+                    Username = "Rahaf",
+                    Password = 1234.ToString(),
+                    Email = "rahaf44@gmail.com",
+                    ProfilePicture = "test photo"
+                }
+            };
+            await userRepo.CreateUser(CreatedUser);
+            var affected =await userRepo.Save();
+            var newCount = await userRepo.GetCurrentUsersCount();
+            Assert.NotEqual(newCount, oldCount);
+            Assert.True(newCount > oldCount);
+            Assert.Equal(CreatedUser.Count,affected);
+        }
+    }
 }

@@ -63,4 +63,9 @@ public class UserRepository : IUserRepository
         var affected=await _conduitDbContext.SaveChangesAsync();
         return affected;
     }
+
+    public async Task CreateUser(List<Users> createdUser)
+    {
+        throw new NotImplementedException();
+    }
 }
