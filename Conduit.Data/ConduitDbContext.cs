@@ -71,5 +71,8 @@ public class ConduitDbContext : DbContext
             .WithMany(a => a.ArticlesTags).HasForeignKey(a => a.ArticleId);
         modelBuilder.Entity<ArticlesTags>().HasOne(a => a.Tags)
             .WithMany(t => t.ArticlesTags).HasForeignKey(a => a.Tag);
+        
+        modelBuilder.Entity<Users>().Property(u => u.ProfilePicture)
+            .HasDefaultValue(@"https://api.realworld.io/images/smiley-cyrus.jpeg");
     }
 }
