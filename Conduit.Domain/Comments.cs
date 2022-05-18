@@ -8,4 +8,6 @@ public class Comments
 
     public Users User { get; set; }
     public string Username { get; set; }
+    public Articles Article { get; set; }
+    public int ArticlesId { get; set; }
 }
