@@ -1,6 +1,6 @@
 using Conduit.Data;
 using Conduit.Data.Repositories;
-using Conduit.Data.Models;
+using Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.Repositories;
@@ -23,13 +23,15 @@ public class UserRepositoryTest
             context.Database.EnsureCreated();
             var userRepo = new UserRepository(context);
             var oldCount = await userRepo.GetCurrentUsersCount();
-            var CreatedUser = new UserForCreationDto
+            var CreatedUser = new Users
             {
                 Username = "aya",
                 Password = 1234.ToString(),
-                Email = "ayaJamal@gmail.com"
+                Email = "ayaJamal@gmail.com",
+                ProfilePicture = "test photo"
             };
-            var newAuthor = await userRepo.CreateUser(CreatedUser);
+            await userRepo.CreateUser(CreatedUser);
+            await userRepo.Save();
             var newCount= await userRepo.GetCurrentUsersCount();
             Assert.NotEqual(newCount,oldCount);
             Assert.True(newCount>oldCount);
