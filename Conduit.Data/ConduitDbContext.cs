@@ -84,6 +84,7 @@ public class ConduitDbContext : DbContext
         SeedingTags(modelBuilder);
         SeedingFollowers(modelBuilder);
         SeedingFavoriteArticles(modelBuilder);
+        SeedingArticlesTag(modelBuilder);
     }
 
     private void SeedingUsers(ModelBuilder modelBuilder)
@@ -236,6 +237,27 @@ public class ConduitDbContext : DbContext
             {
                 Username = "Hala",
                 ArticleId = 3
+            }
+            );
+    }
+
+    private void SeedingArticlesTag(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ArticlesTags>().HasData(
+            new ArticlesTags
+            {
+                ArticleId = 1,
+                Tag = "Welcoming"
+            },
+            new ArticlesTags
+            {
+                ArticleId = 1,
+                Tag = "Greetings"
+            },
+            new ArticlesTags
+            {
+                ArticleId = 3,
+                Tag = "Greetings"
             }
             );
     }
