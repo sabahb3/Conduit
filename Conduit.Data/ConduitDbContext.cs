@@ -83,6 +83,7 @@ public class ConduitDbContext : DbContext
         SeedingComments(modelBuilder);
         SeedingTags(modelBuilder);
         SeedingFollowers(modelBuilder);
+        SeedingFavoriteArticles(modelBuilder);
     }
 
     private void SeedingUsers(ModelBuilder modelBuilder)
@@ -214,6 +215,27 @@ public class ConduitDbContext : DbContext
             {
                 Username = "Shaymaa",
                 FollowingId = "Sabah"
+            }
+            );
+    }
+
+    private void SeedingFavoriteArticles(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UsersFavoriteArticles>().HasData(
+            new UsersFavoriteArticles
+            {
+                Username = "Sabah",
+                ArticleId = 1
+            },
+            new UsersFavoriteArticles
+            {
+                Username = "Shaymaa",
+                ArticleId = 1
+            },
+            new UsersFavoriteArticles
+            {
+                Username = "Hala",
+                ArticleId = 3
             }
             );
     }
