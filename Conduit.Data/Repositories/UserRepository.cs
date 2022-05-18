@@ -1,5 +1,7 @@
 using Conduit.Data.Models;
 using  Conduit.Domain;
+using Microsoft.EntityFrameworkCore;
+
 namespace Conduit.Data.Repositories;
 
 public class UserRepository
@@ -13,11 +15,18 @@ public class UserRepository
 
     public async Task<int> GetCurrentUsersCount()
     {
-        throw new NotImplementedException();
+        var currentUser= await _conduitDbContext.Users.CountAsync();
+        return currentUser;
     }
 
-    public async Task<Users> CreateUser(UserForCreationDto createdUser)
+    public async Task CreateUser(Users createdUser)
     {
-        throw new NotImplementedException();
+        var user = await _conduitDbContext.Users.AddAsync(createdUser);
+    }
+
+    public async Task<int> Save()
+    {
+        var affected=await _conduitDbContext.SaveChangesAsync();
+        return affected;
     }
 }
