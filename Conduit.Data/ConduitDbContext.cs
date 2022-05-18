@@ -82,6 +82,7 @@ public class ConduitDbContext : DbContext
         SeedingArticles(modelBuilder);
         SeedingComments(modelBuilder);
         SeedingTags(modelBuilder);
+        SeedingFollowers(modelBuilder);
     }
 
     private void SeedingUsers(ModelBuilder modelBuilder)
@@ -192,6 +193,27 @@ public class ConduitDbContext : DbContext
             new Tags
             {
                 Tag = "Greetings"
+            }
+            );
+    }
+
+    private void SeedingFollowers(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Followers>().HasData(
+            new Followers
+            {
+                Username = "Sabah",
+                FollowingId = "Shaymaa"
+            },
+            new Followers
+            {
+                Username = "Sabah",
+                FollowingId = "Hala"
+            },
+            new Followers
+            {
+                Username = "Shaymaa",
+                FollowingId = "Sabah"
             }
             );
     }
