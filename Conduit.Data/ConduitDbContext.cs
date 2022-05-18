@@ -78,6 +78,7 @@ public class ConduitDbContext : DbContext
         
         modelBuilder.Entity<Users>().Property(u => u.ProfilePicture)
             .HasDefaultValue(@"https://api.realworld.io/images/smiley-cyrus.jpeg");
+        modelBuilder.Entity<Users>().HasIndex(u => u.Email).IsUnique();
         SeedingUsers(modelBuilder);
         SeedingArticles(modelBuilder);
         SeedingComments(modelBuilder);
