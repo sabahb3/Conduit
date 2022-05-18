@@ -53,20 +53,23 @@ public class ConduitDbContext : DbContext
         modelBuilder.Entity<ArticlesTags>().HasKey(a => new { a.ArticleId, a.Tag });
         
         modelBuilder.Entity<Comments>().HasOne(c => c.User)
-            .WithMany(u => u.Comments).HasForeignKey(c => c.Username);
+            .WithMany(u => u.Comments).HasForeignKey(c => c.Username)
+            .OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<Comments>().HasOne(c => c.Article)
             .WithMany(a => a.Comments).HasForeignKey(c => c.ArticlesId);
         modelBuilder.Entity<Articles>().HasOne(a => a.User)
             .WithMany(u => u.Articles).HasForeignKey(a => a.Username);
         
         modelBuilder.Entity<UsersFavoriteArticles>().HasOne(u => u.User)
-            .WithMany(u => u.UsersFavoriteArticles).HasForeignKey(u => u.Username);
+            .WithMany(u => u.UsersFavoriteArticles).HasForeignKey(u => u.Username)
+            .OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<UsersFavoriteArticles>().HasOne(u => u.Articles)
             .WithMany(a => a.UsersFavoriteArticles).HasForeignKey(u => u.ArticleId);
         modelBuilder.Entity<Followers>().HasOne(f => f.User)
             .WithMany(u => u.Followers).HasForeignKey(f => f.Username);
         modelBuilder.Entity<Followers>().HasOne(f => f.Follower)
-            .WithMany().HasForeignKey(f => f.FollowerId);
+            .WithMany().HasForeignKey(f => f.FollowerId)
+            .OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<ArticlesTags>().HasOne(a => a.Articles)
             .WithMany(a => a.ArticlesTags).HasForeignKey(a => a.ArticleId);
         modelBuilder.Entity<ArticlesTags>().HasOne(a => a.Tags)
