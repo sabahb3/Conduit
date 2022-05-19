@@ -12,7 +12,7 @@ public interface IUserRepository
     public Task<bool> IsExists(string username);
     public Task<Users?> GetUser(string username);
     public Task<IEnumerable<Users>> GetAllUsers();
-    public Task<Users?> UpdateUser(string username, Users updatedUser);
+    public Task<Users?> UpdateUser(Users updatedUser);
 
 
 }

@@ -100,9 +100,9 @@ public class UserRepository : IUserRepository
         return await _conduitDbContext.Users.ToListAsync();
     }
 
-    public async Task<Users?> UpdateUser(string username, Users updatedUser)
+    public async Task<Users?> UpdateUser(Users updatedUser)
     {
-        var user = await _conduitDbContext.Users.FindAsync(username);
+        var user = await _conduitDbContext.Users.FindAsync(updatedUser.Username);
         user?.AssignUser(updatedUser);
         return user;
     }

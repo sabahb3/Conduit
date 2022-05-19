@@ -187,7 +187,7 @@ public class UserRepositoryTest
                 ProfilePicture = "Updated photo",
                 Password = 1212.ToString()
             };
-            await userRepo.UpdateUser(userToUpdate!.Username, updatedUser);
+            await userRepo.UpdateUser(updatedUser);
             var affectedUser=await userRepo.Save();
             Assert.Equal("sabah",userToUpdate!.Username);
             Assert.Equal("sabahb399@gmail.com",userToUpdate.Email);
