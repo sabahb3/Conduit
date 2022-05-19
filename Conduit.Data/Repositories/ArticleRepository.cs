@@ -1,26 +1,31 @@
 using Conduit.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Data.Repositories;
 
 public class ArticleRepository
 {
+    private readonly ConduitDbContext _context;
+
     public ArticleRepository(ConduitDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
     public async Task<int> GetCurrentArticleCount()
     {
-        throw new NotImplementedException();
+        var currentUser= await _context.Articles.CountAsync();
+        return currentUser;
     }
 
     public async Task CreateArticle(Articles createdArticle)
     {
-        throw new NotImplementedException();
+        await _context.Articles.AddAsync(createdArticle);
     }
 
-    public async Task Save()
+    public async Task<int> Save()
     {
-        throw new NotImplementedException();
+        var affected=await _context.SaveChangesAsync();
+        return affected;
     }
 }
