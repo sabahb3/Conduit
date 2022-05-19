@@ -75,4 +75,9 @@ public class ArticleRepository : IArticleRepository
             }
         }
     }
+
+    public async Task RemoveArticles()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -207,4 +207,20 @@ public class ArticleRepositoryTest
             Assert.True(newCount < oldCount);
         }
     }
+    [Fact]
+    public async void ShouldDeleteAllArticles()
+    {
+        _optionsBuilder.UseInMemoryDatabase("RemoveAllArticles");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+            var oldCount = await articleRepo.GetCurrentArticleCount();
+            await articleRepo.RemoveArticles();
+            await articleRepo.Save();
+            Assert.NotEqual(0,oldCount);
+            Assert.Empty(context.Articles);
+        }
+    }
 }
