@@ -88,4 +88,9 @@ public class UserRepository : IUserRepository
             user.State = EntityState.Detached;
         }
     }
+
+    public async Task<Users> GetUser(string sabah)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -133,4 +133,23 @@ public class UserRepositoryTest
             Assert.Equal(newCount, oldCount);
         }
     }
+
+    [Fact]
+    public async Task ShouldGetUserInfo()
+    {
+        _optionsBuilder.UseInMemoryDatabase("GetUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            var oldCount = await userRepo.GetCurrentUsersCount();
+            var user= await userRepo.GetUser("sabah");
+            Assert.Equal("sabah",user.Username);
+            Assert.Equal("4050",user.Password);
+            Assert.Equal("sabahBaara4@gmail.com",user.Email);
+            Assert.Null(user.Bio);
+            Assert.Equal("https://api.realworld.io/images/smiley-cyrus.jpeg",user.ProfilePicture);
+        }
+    }
 }
