@@ -99,8 +99,16 @@ public class UserRepository : IUserRepository
         return await _conduitDbContext.Users.ToListAsync();
     }
 
-    public async Task UpdateUser(string username, Users updatedUser)
+    public async Task<Users?> UpdateUser(string username, Users updatedUser)
     {
-        throw new NotImplementedException();
+        var user = await _conduitDbContext.Users.FindAsync(username);
+        if (user != null)
+        {
+            user.Email = updatedUser.Email;
+            user.ProfilePicture = updatedUser.ProfilePicture;
+            user.Bio = updatedUser.Bio;
+            user.Password = updatedUser.Password;
+        }
+        return user;
     }
 }

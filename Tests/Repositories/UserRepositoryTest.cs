@@ -189,7 +189,7 @@ public class UserRepositoryTest
             };
             await userRepo.UpdateUser(userToUpdate!.Username, updatedUser);
             var affectedUser=await userRepo.Save();
-            Assert.Equal("sabah",userToUpdate.Username);
+            Assert.Equal("sabah",userToUpdate!.Username);
             Assert.Equal("sabahb399@gmail.com",userToUpdate.Email);
             Assert.Equal("Hello",userToUpdate.Bio);
             Assert.Equal("Updated photo",userToUpdate.ProfilePicture);
