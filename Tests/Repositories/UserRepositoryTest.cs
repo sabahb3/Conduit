@@ -161,7 +161,7 @@ public class UserRepositoryTest
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             var userRepo = new UserRepository(context);
-            var users= await userRepo.GetUser();
+            var users= await userRepo.GetAllUsers();
             Assert.All(users.Select(u=>u.ProfilePicture), 
                 p=>Assert.Equal("https://api.realworld.io/images/smiley-cyrus.jpeg",p));
             Assert.All(users.Select(u=>u.Bio), Assert.Null);
