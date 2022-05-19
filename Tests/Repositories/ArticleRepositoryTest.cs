@@ -99,9 +99,9 @@ public class ArticleRepositoryTest
         }
     }
     [Fact]
-    public async Task ShouldGetAllUsers()
+    public async Task ShouldGetAllArticles()
     {
-        _optionsBuilder.UseInMemoryDatabase("GetUser");
+        _optionsBuilder.UseInMemoryDatabase("GetUArticles");
         using (var context = new ConduitDbContext(_optionsBuilder.Options))
         {
             context.Database.EnsureDeleted();
