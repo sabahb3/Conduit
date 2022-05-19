@@ -189,4 +189,22 @@ public class ArticleRepositoryTest
             Assert.All(context.Articles.Select(u=>u.Date),u=>Assert.Equal( new DateTime(2022,5,1),u));
         }
     }
+
+    [Fact]
+    public async void ShouldDeleteArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("RemoveArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+            var oldCount = await articleRepo.GetCurrentArticleCount();
+            await articleRepo.RemoveArticle(1);
+            await articleRepo.Save();
+            var newCount = await articleRepo.GetCurrentArticleCount();
+            Assert.NotEqual(newCount, oldCount);
+            Assert.True(newCount < oldCount);
+        }
+    }
 }

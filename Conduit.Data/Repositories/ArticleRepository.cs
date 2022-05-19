@@ -62,4 +62,9 @@ public class ArticleRepository : IArticleRepository
             await UpdateArticle(article);
         }
     }
+
+    public async Task RemoveArticle(int articleId)
+    {
+        throw new NotImplementedException();
+    }
 }

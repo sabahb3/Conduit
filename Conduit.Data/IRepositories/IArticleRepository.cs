@@ -11,4 +11,6 @@ public interface IArticleRepository
     public Task<Articles?> GetArticle(int articleId);
     public Task<Articles?> UpdateArticle(Articles updatedArticle);
     public Task UpdateArticles(List<Articles> updatedArticles);
+    public  Task RemoveArticle(int articleId);
+
 }
