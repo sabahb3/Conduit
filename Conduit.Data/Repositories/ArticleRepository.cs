@@ -30,4 +30,9 @@ public class ArticleRepository
         var affected=await _context.SaveChangesAsync();
         return affected;
     }
+
+    public async Task CreateArticles(List<Articles> createdArticle)
+    {
+        throw new NotImplementedException();
+    }
 }

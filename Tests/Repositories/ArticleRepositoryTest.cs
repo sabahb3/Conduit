@@ -39,5 +39,43 @@ public class ArticleRepositoryTest
             Assert.True(newCount > oldCount);
         }
     }
-
+    [Fact]
+    public async Task ShouldAddUsersList()
+    {
+        _optionsBuilder.UseInMemoryDatabase("AddArticleList");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+            var oldCount = await articleRepo.GetCurrentArticleCount();
+            var CreatedArticle = new List<Articles>
+            {
+                new Articles
+                {
+                    Username = "sabah",
+                    Id = 4,
+                    Title = "New Article",
+                    Description = "How to add new object",
+                    Body = "Use EF core to add object to DB",
+                    Date = new DateTime(2022,5,19)
+                },
+                new Articles
+                {
+                    Username = "Hala",
+                    Id = 5,
+                    Title = "New Article",
+                    Description = "How to add new object",
+                    Body = "Use EF core to add object to DB",
+                    Date = new DateTime(2022,5,16)
+                }
+            };
+            await articleRepo.CreateArticles(CreatedArticle);
+            var affected = await articleRepo.Save();
+            var newCount = await articleRepo.GetCurrentArticleCount();
+            Assert.NotEqual(newCount, oldCount);
+            Assert.True(newCount > oldCount);
+            Assert.Equal(CreatedArticle.Count, affected);
+        }
+    }
 }
