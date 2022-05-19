@@ -168,4 +168,33 @@ public class UserRepositoryTest
             Assert.Equal(3,users.Count());
         }
     }
+
+    [Fact]
+    public async Task ShouldUpdateUserInfo()
+    {
+        _optionsBuilder.UseInMemoryDatabase("GetUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            var userToUpdate = await userRepo.GetUser("sabah");
+            var updatedUser = new Users
+            {
+                Username = userToUpdate!.Username,
+                Email="sabahb399@gmail.com",
+                Bio="Hello",
+                ProfilePicture = "Updated photo",
+                Password = 1212.ToString()
+            };
+            await userRepo.UpdateUser(userToUpdate!.Username, updatedUser);
+            var affectedUser=await userRepo.Save();
+            Assert.Equal("sabah",userToUpdate.Username);
+            Assert.Equal("sabahb399@gmail.com",userToUpdate.Email);
+            Assert.Equal("Hello",userToUpdate.Bio);
+            Assert.Equal("Updated photo",userToUpdate.ProfilePicture);
+            Assert.Equal("1212",userToUpdate.Password);
+            Assert.Equal(1,affectedUser);
+        }
+    }
 }

@@ -98,4 +98,9 @@ public class UserRepository : IUserRepository
     {
         return await _conduitDbContext.Users.ToListAsync();
     }
+
+    public async Task UpdateUser(string username, Users updatedUser)
+    {
+        throw new NotImplementedException();
+    }
 }
