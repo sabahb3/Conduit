@@ -54,4 +54,9 @@ public class ArticleRepository : IArticleRepository
         article?.AssignArticle(updatedArticle);
         return article;
     }
+
+    public async Task UpdateArticles(List<Articles> updatedArticles)
+    {
+        throw new NotImplementedException();
+    }
 }

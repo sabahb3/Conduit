@@ -141,4 +141,52 @@ public class ArticleRepositoryTest
             Assert.Equal(1, affectedUser);
         }
     }
+    [Fact]
+    public async Task ShouldUpdateListOfArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UpdateArticles");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+            var updatedArticles = new List<Articles>
+            {
+                new Articles
+                {
+                    Username = "Hala",
+                    Id = 1,
+                    Title = "Updated Article",
+                    Description = "How to update existing object",
+                    Body = "Use EF core to update object in DB",
+                    Date = new DateTime(2022,5,1)
+                },
+                new Articles
+                {
+                    Username = "Hala",
+                    Id = 2,
+                    Title = "Updated Article",
+                    Description = "How to update existing object",
+                    Body = "Use EF core to update object in DB",
+                    Date = new DateTime(2022,5,1)
+                },
+                new Articles
+                {
+                    Username = "Sabah",
+                    Id = 3,
+                    Title = "Updated Article",
+                    Description = "How to update existing object",
+                    Body = "Use EF core to update object in DB",
+                    Date = new DateTime(2022,5,1)
+                }
+            };
+            await articleRepo.UpdateArticles(updatedArticles);
+            var affectedUser = await articleRepo.Save();
+            Assert.Equal(3,affectedUser);
+            Assert.All(context.Articles.Select(u=>u.Title),u=>Assert.Equal( "Updated Article",u));
+            Assert.All(context.Articles.Select(u=>u.Description),u=>Assert.Equal( "How to update existing object",u));
+            Assert.All(context.Articles.Select(u=>u.Body),u=>Assert.Equal( "Use EF core to update object in DB",u));
+            Assert.All(context.Articles.Select(u=>u.Date),u=>Assert.Equal( new DateTime(2022,5,1),u));
+        }
+    }
 }
