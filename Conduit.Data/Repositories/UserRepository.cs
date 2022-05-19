@@ -1,3 +1,4 @@
+using Conduit.Data.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using  Conduit.Domain;
@@ -102,13 +103,7 @@ public class UserRepository : IUserRepository
     public async Task<Users?> UpdateUser(string username, Users updatedUser)
     {
         var user = await _conduitDbContext.Users.FindAsync(username);
-        if (user != null)
-        {
-            user.Email = updatedUser.Email;
-            user.ProfilePicture = updatedUser.ProfilePicture;
-            user.Bio = updatedUser.Bio;
-            user.Password = updatedUser.Password;
-        }
+        user?.AssignUser(updatedUser);
         return user;
     }
 }
