@@ -4,5 +4,10 @@
   &lt;ProjectFile&gt;B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F/d:Repositories/f:UserRepositoryTest.cs&lt;/ProjectFile&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f85b6c22_002Dc293_002D4e87_002D8039_002Dbe6233afaaba/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from UserRepositoryTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F/d:Repositories/f:UserRepositoryTest.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F/d:Repositories/f:UserRepositoryTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.Repositories.ArticleRepositoryTest.ShouldAddNewArticle&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
