@@ -20,7 +20,9 @@ public class ArticleRepository
 
     public async Task CreateArticle(Articles createdArticle)
     {
-        await _context.Articles.AddAsync(createdArticle);
+        var user = _context.Users.Find(createdArticle.Username);
+        if(user!=null) 
+            await _context.Articles.AddAsync(createdArticle);
     }
 
     public async Task<int> Save()
