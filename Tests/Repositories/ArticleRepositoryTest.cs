@@ -25,7 +25,7 @@ public class ArticleRepositoryTest
             var oldCount = await articleRepo.GetCurrentArticleCount();
             var CreatedArticle = new Articles
             {
-                Username = "aya",
+                Username = "sabah",
                 Id = 4,
                 Title = "New Article",
                 Description = "How to add new object",
