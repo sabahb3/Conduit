@@ -109,6 +109,9 @@ public class UserRepository : IUserRepository
 
     public async Task UpdateUsers(List<Users> updatedUsers)
     {
-        throw new NotImplementedException();
+        foreach (var user in updatedUsers)
+        {
+            await UpdateUser(user);
+        }
     }
 }

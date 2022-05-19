@@ -13,6 +13,7 @@ public interface IUserRepository
     public Task<Users?> GetUser(string username);
     public Task<IEnumerable<Users>> GetAllUsers();
     public Task<Users?> UpdateUser(Users updatedUser);
+    public Task UpdateUsers(List<Users> updatedUsers);
 
 
 }
