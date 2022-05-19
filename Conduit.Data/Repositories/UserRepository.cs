@@ -106,4 +106,9 @@ public class UserRepository : IUserRepository
         user?.AssignUser(updatedUser);
         return user;
     }
+
+    public async Task UpdateUsers(List<Users> updatedUsers)
+    {
+        throw new NotImplementedException();
+    }
 }
