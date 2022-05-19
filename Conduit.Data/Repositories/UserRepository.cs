@@ -93,4 +93,9 @@ public class UserRepository : IUserRepository
     {
         return await _conduitDbContext.Users.FindAsync(username);
     }
+
+    public async Task<IList<Users>> GetUser()
+    {
+        throw new NotImplementedException();
+    }
 }
