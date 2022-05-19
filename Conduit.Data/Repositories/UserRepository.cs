@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
         return currentUser;
     }
 
-    public async Task<(bool isValid,List<string> message)> CreateUser(Users createdUser)
+    public async Task<(bool isValid,List<string> message,EntityEntry<Users>? userEntity)> CreateUser(Users createdUser)
     {
         bool valid=true;
         var message = new List<string>();
@@ -36,11 +36,12 @@ public class UserRepository : IUserRepository
             valid = false;
             message.Add("email has already been taken");
         }
+        EntityEntry<Users>? userEntity=null;
         if (valid)
         {
-            await _conduitDbContext.Users.AddAsync(createdUser);
+            userEntity=await _conduitDbContext.Users.AddAsync(createdUser);
         }
-        return (valid, message);
+        return (valid, message,userEntity);
     }
 
     public async Task<bool> IsExists(string username)
@@ -67,9 +68,24 @@ public class UserRepository : IUserRepository
 
     public async Task CreateUser(List<Users> createdUser)
     {
+        var usersEntity = new List<EntityEntry<Users>>();
         foreach (var user in createdUser)
         {
-            await CreateUser(user);
+            var result=await CreateUser(user);
+            if(result.isValid)
+                usersEntity.Add(result.userEntity!);
+            else
+            {
+                UndoUserCreation(usersEntity);
+                break;
+            }
+        }
+    }
+    public async Task UndoUserCreation(List<EntityEntry<Users>> users)
+    {
+        foreach (var user in users)
+        {
+            user.State = EntityState.Detached;
         }
     }
 }
