@@ -31,8 +31,11 @@ public class ArticleRepository
         return affected;
     }
 
-    public async Task CreateArticles(List<Articles> createdArticle)
+    public async Task CreateArticles(List<Articles> createdArticles)
     {
-        throw new NotImplementedException();
+        foreach (var article in createdArticles)
+        {
+            await CreateArticle(article);
+        }
     }
 }
