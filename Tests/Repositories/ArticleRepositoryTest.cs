@@ -208,7 +208,7 @@ public class ArticleRepositoryTest
         }
     }
     [Fact]
-    public async void ShouldDeleteAllArticles()
+    public async Task ShouldDeleteAllArticles()
     {
         _optionsBuilder.UseInMemoryDatabase("RemoveAllArticles");
         using (var context = new ConduitDbContext(_optionsBuilder.Options))
