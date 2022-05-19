@@ -1,3 +1,4 @@
+using Conduit.Data.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -50,13 +51,7 @@ public class ArticleRepository : IArticleRepository
     public async Task<Articles?> UpdateArticle(Articles updatedArticle)
     {
         var article = await _context.Articles.FindAsync(updatedArticle.Id);
-        if (article != null)
-        {
-            article.Date = updatedArticle.Date;
-            article.Title = updatedArticle.Title;
-            article.Description = updatedArticle.Description;
-            article.Body = updatedArticle.Body;
-        }
+        article?.AssignArticle(updatedArticle);
         return article;
     }
 }
