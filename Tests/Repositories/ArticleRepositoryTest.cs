@@ -120,10 +120,10 @@ public class ArticleRepositoryTest
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             var articleRepo = new ArticleRepository(context);
-            var articleToUpdate = await articleRepo.GetArticle(1);
+            var articleToUpdate = await articleRepo.GetArticle(3);
             var updatedArticle = new Articles
             {
-                Username = "Hala",
+                Username = "Sabah",
                 Id = 3,
                 Title = "Updated Article",
                 Description = "How to update existing object",
