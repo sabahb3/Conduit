@@ -111,4 +111,34 @@ public class ArticleRepositoryTest
             Assert.Equal(3, articles.Count());
         }
     }
+    [Fact]
+    public async Task ShouldUpdateArticleInfo()
+    {
+        _optionsBuilder.UseInMemoryDatabase("updateArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+            var articleToUpdate = await articleRepo.GetArticle(1);
+            var updatedArticle = new Articles
+            {
+                Username = "Hala",
+                Id = 3,
+                Title = "Updated Article",
+                Description = "How to update existing object",
+                Body = "Use EF core to update object in DB",
+                Date = new DateTime(2022,5,1)
+            };
+            await articleRepo.UpdateArticle(updatedArticle);
+            var affectedUser = await articleRepo.Save();
+            Assert.Equal(updatedArticle.Username, articleToUpdate!.Username);
+            Assert.Equal(updatedArticle.Id, articleToUpdate.Id);
+            Assert.Equal(updatedArticle.Title, articleToUpdate.Title);
+            Assert.Equal(updatedArticle.Description, articleToUpdate.Description);
+            Assert.Equal(updatedArticle.Body, articleToUpdate.Body);
+            Assert.Equal(updatedArticle.Date,articleToUpdate.Date);
+            Assert.Equal(1, affectedUser);
+        }
+    }
 }
