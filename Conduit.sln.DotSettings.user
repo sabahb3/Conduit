@@ -10,6 +10,7 @@
       &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.Repositories.ArticleRepositoryTest.ShouldAddNewArticle&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.Repositories.ArticleRepositoryTest.ShouldAddUsersList&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.Repositories.ArticleRepositoryTest.ShouldGetArticleInfo&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.Repositories.ArticleRepositoryTest.ShouldGetAllUsers&lt;/TestId&gt;&#xD;
     &lt;/TestAncestor&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

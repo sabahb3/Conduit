@@ -41,4 +41,9 @@ public class ArticleRepository : IArticleRepository
     {
         return await _context.Articles.FindAsync(articleId);
     }
+
+    public async Task<List<Articles>> GetAllArticles()
+    {
+        throw new NotImplementedException();
+    }
 }

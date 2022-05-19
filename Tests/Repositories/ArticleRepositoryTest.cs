@@ -98,4 +98,17 @@ public class ArticleRepositoryTest
             Assert.Equal("Hala", article.Username);
         }
     }
+    [Fact]
+    public async Task ShouldGetAllUsers()
+    {
+        _optionsBuilder.UseInMemoryDatabase("GetUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+            var articles = await articleRepo.GetAllArticles();
+            Assert.Equal(3, articles.Count());
+        }
+    }
 }
