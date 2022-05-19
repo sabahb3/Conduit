@@ -37,8 +37,8 @@ public class ArticleRepository : IArticleRepository
         foreach (var article in createdArticles) await CreateArticle(article);
     }
 
-    public async Task<Articles> GetArticle(int i)
+    public async Task<Articles?> GetArticle(int articleId)
     {
-        throw new NotImplementedException();
+        return await _context.Articles.FindAsync(articleId);
     }
 }

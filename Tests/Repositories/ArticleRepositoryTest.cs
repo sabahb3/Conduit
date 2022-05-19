@@ -90,9 +90,9 @@ public class ArticleRepositoryTest
             var article = await articleRepo.GetArticle(1);
             Assert.Equal("Hello, and welcome", article.Title);
             Assert.Equal("How to say hello", article.Description);
-            Assert.Equal(@"We often start an English conversation with a simple “hello.”  
-                        You may see someone you know, make eye contact with a stranger,    
-                         or start a phone conversation with this simple greeting.  
+            Assert.Equal(@"We often start an English conversation with a simple “hello.”
+                         You may see someone you know, make eye contact with a stranger, 
+                         or start a phone conversation with this simple greeting. 
                          You may be asking yourself: “What should I say instead of “hello?", article.Body);
             Assert.Equal(new DateTime(2022,4,20),article.Date);
             Assert.Equal("Hala", article.Username);

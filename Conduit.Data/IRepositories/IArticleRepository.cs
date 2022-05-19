@@ -8,4 +8,5 @@ public interface IArticleRepository
     public Task CreateArticle(Articles createdArticle);
     public Task<int> Save();
     public Task CreateArticles(List<Articles> createdArticles);
+    public Task<Articles?> GetArticle(int articleId);
 }
