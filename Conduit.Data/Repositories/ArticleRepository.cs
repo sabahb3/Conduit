@@ -57,6 +57,9 @@ public class ArticleRepository : IArticleRepository
 
     public async Task UpdateArticles(List<Articles> updatedArticles)
     {
-        throw new NotImplementedException();
+        foreach (var article in updatedArticles)
+        {
+            await UpdateArticle(article);
+        }
     }
 }
