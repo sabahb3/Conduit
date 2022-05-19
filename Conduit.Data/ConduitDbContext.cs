@@ -78,6 +78,7 @@ public class ConduitDbContext : DbContext
         
         modelBuilder.Entity<Users>().Property(u => u.ProfilePicture)
             .HasDefaultValue(@"https://api.realworld.io/images/smiley-cyrus.jpeg");
+        modelBuilder.Entity<Users>().HasIndex(u => u.Email).IsUnique();
         SeedingUsers(modelBuilder);
         SeedingArticles(modelBuilder);
         SeedingComments(modelBuilder);
@@ -94,19 +95,23 @@ public class ConduitDbContext : DbContext
             {
                 Username = "sabah",
                 Password = 4050.ToString(),
-                Email = "sabahBaara4@gmail.com"
+                Email = "sabahBaara4@gmail.com",
+                ProfilePicture = @"https://api.realworld.io/images/smiley-cyrus.jpeg"
             },
             new Users
             {
                 Username = "Shaymaa",
                 Password = 1234.ToString(),
-                Email = "shaymaaAshqar@gmail.com"
+                Email = "shaymaaAshqar@gmail.com",
+                ProfilePicture = @"https://api.realworld.io/images/smiley-cyrus.jpeg"
+
             },
             new Users
             {
                 Username = "Hala",
                 Password = 0000.ToString(),
-                Email = "Hala@gmail.com"
+                Email = "Hala@gmail.com",
+                ProfilePicture = @"https://api.realworld.io/images/smiley-cyrus.jpeg"
             });
     }
 
