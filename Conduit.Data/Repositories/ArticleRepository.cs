@@ -16,8 +16,8 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<int> GetCurrentArticleCount()
     {
-        var currentUser = await _context.Articles.CountAsync();
-        return currentUser;
+        var currentArticles = await _context.Articles.CountAsync();
+        return currentArticles;
     }
 
     public async Task CreateArticle(Articles createdArticle)

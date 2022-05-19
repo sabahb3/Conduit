@@ -40,7 +40,7 @@ public class ArticleRepositoryTest
         }
     }
     [Fact]
-    public async Task ShouldAddUsersList()
+    public async Task ShouldAddArticlesList()
     {
         _optionsBuilder.UseInMemoryDatabase("AddArticleList");
         using (var context = new ConduitDbContext(_optionsBuilder.Options))
