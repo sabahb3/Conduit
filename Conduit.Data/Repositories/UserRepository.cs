@@ -89,8 +89,8 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<Users> GetUser(string sabah)
+    public async Task<Users?> GetUser(string username)
     {
-        throw new NotImplementedException();
+        return await _conduitDbContext.Users.FindAsync(username);
     }
 }

@@ -10,6 +10,8 @@ public interface IUserRepository
     public Task CreateUser(List<Users> createdUser);
     public Task<int> Save();
     public Task<bool> IsExists(string username);
+    public Task<Users?> GetUser(string username);
+
 
 
 }
