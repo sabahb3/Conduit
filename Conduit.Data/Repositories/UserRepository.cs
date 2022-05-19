@@ -2,6 +2,7 @@ using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using  Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Conduit.Data.Repositories;
 
@@ -66,6 +67,9 @@ public class UserRepository : IUserRepository
 
     public async Task CreateUser(List<Users> createdUser)
     {
-        throw new NotImplementedException();
+        foreach (var user in createdUser)
+        {
+            await CreateUser(user);
+        }
     }
 }
