@@ -65,6 +65,14 @@ public class ArticleRepository : IArticleRepository
 
     public async Task RemoveArticle(int articleId)
     {
-        throw new NotImplementedException();
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article != null)
+        {
+            using (var deleteContext = new ConduitDbContext(_context.ConduitOptions.Options))
+            {
+                deleteContext.Articles.Remove(article);
+                await deleteContext.SaveChangesAsync();
+            }
+        }
     }
 }
