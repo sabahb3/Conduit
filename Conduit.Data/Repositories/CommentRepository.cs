@@ -55,6 +55,6 @@ public class CommentRepository :ICommentRepository
 
     public async Task<List<Comments>> GetComments()
     {
-        throw new NotImplementedException();
+        return await _context.Comments.ToListAsync();
     }
 }
