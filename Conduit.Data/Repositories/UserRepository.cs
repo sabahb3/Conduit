@@ -122,4 +122,9 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync();
         return count > 0;
     }
+
+    public async Task FavoriteArticle(string username, int articleId)
+    {
+        throw new NotImplementedException();
+    }
 }

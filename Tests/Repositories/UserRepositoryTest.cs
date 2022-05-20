@@ -261,4 +261,25 @@ public class UserRepositoryTest
             
         }
     }
+
+    [Fact]
+    public async Task ShouldFavoriteArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("FavoriteArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.IsArticlePreferred("Shaymaa", 2);
+            await userRepo.FavoriteArticle("Shaymaa", 2);
+            var affected = await userRepo.Save();
+            var newAttitude =  await userRepo.IsArticlePreferred("Shaymaa", 2);
+            
+            Assert.False(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.True(newAttitude);
+        }
+    }
 }
