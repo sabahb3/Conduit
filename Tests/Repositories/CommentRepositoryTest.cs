@@ -163,5 +163,20 @@ public class CommentRepositoryTest
             Assert.Empty(context.Comments);
         }   
     }
+    [Fact]
+    public async Task ShouldDeleteArticleComments()
+    {
+        _optionsBuilder.UseInMemoryDatabase("DeleteComment");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var commentRepo = new CommentRepository(context);
+            await commentRepo.DeleteArticleComments(1);
+            var affected = await commentRepo.Save();
+            Assert.Equal(2,affected);
+            Assert.Single(context.Comments);
+        }   
+    }
 
 }
