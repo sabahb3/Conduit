@@ -37,4 +37,9 @@ public class CommentRepository :ICommentRepository
         foreach (var comment in createdComments) await CreateComment(comment);
 
     }
+
+    public async Task<List<Comments>> ReadArticleComments(int i)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -77,4 +77,18 @@ public class CommentRepositoryTest
         }
     }
 
+    [Fact]
+    public async Task ShouldReadArticleComment()
+    {
+        _optionsBuilder.UseInMemoryDatabase("ArticleComments");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var commentRepo = new CommentRepository(context);
+            var articleComments = await commentRepo.ReadArticleComments(1);
+            Assert.Equal(2,articleComments.Count());
+        }
+    }
+
 }
