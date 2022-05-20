@@ -57,4 +57,9 @@ public class CommentRepository :ICommentRepository
     {
         return await _context.Comments.ToListAsync();
     }
+
+    public async Task DeleteComment(int commentId)
+    {
+        throw new NotImplementedException();
+    }
 }
