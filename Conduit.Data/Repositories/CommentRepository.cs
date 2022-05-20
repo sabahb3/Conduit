@@ -70,4 +70,9 @@ public class CommentRepository :ICommentRepository
             _context.Entry(comment).State = EntityState.Deleted;
         }
     }
+
+    public async Task DeleteComments()
+    {
+        throw new NotImplementedException();
+    }
 }
