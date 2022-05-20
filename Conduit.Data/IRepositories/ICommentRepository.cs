@@ -11,5 +11,7 @@ public interface ICommentRepository
     public Task<List<Comments>> ReadArticleComments(int articleId);
     public Task<List<Comments>> ReadUserComments(string username);
     public Task<Comments?> GetComment(int commentId);
+    public Task<List<Comments>> GetComments();
+
 
 }

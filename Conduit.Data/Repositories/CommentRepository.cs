@@ -52,4 +52,9 @@ public class CommentRepository :ICommentRepository
     {
         return await _context.Comments.FindAsync(commentId);
     }
+
+    public async Task<List<Comments>> GetComments()
+    {
+        throw new NotImplementedException();
+    }
 }
