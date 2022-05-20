@@ -31,4 +31,9 @@ public class CommentRepository :ICommentRepository
         var affected = await _context.SaveChangesAsync();
         return affected;
     }
+
+    public async Task CreateComments(List<Comments> createdComments)
+    {
+        throw new NotImplementedException();
+    }
 }
