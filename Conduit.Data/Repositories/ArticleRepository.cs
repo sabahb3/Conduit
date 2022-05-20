@@ -84,4 +84,9 @@ public class ArticleRepository : IArticleRepository
             await RemoveArticle(article.Id);
         }
     }
+
+    public async Task<int> CountWhoFavoriteArticle(int articleId)
+    {
+        throw new NotImplementedException();
+    }
 }
