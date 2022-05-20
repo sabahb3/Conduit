@@ -47,4 +47,9 @@ public class CommentRepository :ICommentRepository
     {
         return await _context.Comments.Where(c => c.Username == username).ToListAsync();
     }
+
+    public async Task<Comments> GetComment(int commentId)
+    {
+        throw new NotImplementedException();
+    }
 }

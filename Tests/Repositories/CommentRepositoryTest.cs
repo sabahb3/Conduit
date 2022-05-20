@@ -105,4 +105,19 @@ public class CommentRepositoryTest
         }
     }
 
+    [Fact]
+    public async Task ShouldGetComment()
+    {
+        _optionsBuilder.UseInMemoryDatabase("GetComment");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var commentRepo = new CommentRepository(context);
+            var userComments = await commentRepo.GetComment(1);
+            Assert.Equal(1,userComments.ArticlesId);
+            Assert.Equal("Shaymaa",userComments.Username);
+        }
+    }
+
 }
