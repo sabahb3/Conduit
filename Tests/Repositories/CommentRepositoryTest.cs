@@ -100,7 +100,7 @@ public class CommentRepositoryTest
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             var commentRepo = new CommentRepository(context);
-            var userComments = await commentRepo.ReadUserComment("Sabah");
+            var userComments = await commentRepo.ReadUserComments("Sabah");
             Assert.Single(userComments);
         }
     }
