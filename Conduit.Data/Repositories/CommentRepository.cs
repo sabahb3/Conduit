@@ -38,8 +38,8 @@ public class CommentRepository :ICommentRepository
 
     }
 
-    public async Task<List<Comments>> ReadArticleComments(int i)
+    public async Task<List<Comments>> ReadArticleComments(int articleId)
     {
-        throw new NotImplementedException();
+        return await _context.Comments.Where(c => c.ArticlesId == articleId).ToListAsync();
     }
 }

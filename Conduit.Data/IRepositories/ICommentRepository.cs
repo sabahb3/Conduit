@@ -8,4 +8,5 @@ public interface ICommentRepository
     public Task CreateComment(Comments createdComment);
     public Task<int> Save();
     public Task CreateComments(List<Comments> createdComments);
+    public Task<List<Comments>> ReadArticleComments(int articleId);
 }
