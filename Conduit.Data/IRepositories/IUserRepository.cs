@@ -14,6 +14,5 @@ public interface IUserRepository
     public Task<IEnumerable<Users>> GetAllUsers();
     public Task<Users?> UpdateUser(Users updatedUser);
     public Task UpdateUsers(List<Users> updatedUsers);
-
-
+    public Task<bool> IsArticlePreferred(string username, int articleId);
 }

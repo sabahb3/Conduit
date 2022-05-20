@@ -114,4 +114,9 @@ public class UserRepository : IUserRepository
             await UpdateUser(user);
         }
     }
+
+    public async Task<bool> IsArticlePreferred(string username, int articleId)
+    {
+         throw new NotImplementedException();
+    }
 }

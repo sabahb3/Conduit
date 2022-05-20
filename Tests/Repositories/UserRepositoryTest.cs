@@ -245,4 +245,20 @@ public class UserRepositoryTest
             Assert.All(context.Users.Select(u=>u.Password),u=>Assert.Equal( "1212",u));
         }
     }
+
+    [Fact]
+    public async Task ShouldTellIfUserPreferArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("GetUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+
+            var DoesPrefer = await userRepo.IsArticlePreferred("Shaymaa", 1);
+            Assert.True(DoesPrefer);
+            
+        }
+    }
 }
