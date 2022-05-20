@@ -60,6 +60,14 @@ public class CommentRepository :ICommentRepository
 
     public async Task DeleteComment(int commentId)
     {
-        throw new NotImplementedException();
+        var comment = await _context.Comments.FindAsync(commentId);
+        if (comment != null)
+        {
+            using (var deleteContext = new ConduitDbContext(_context.ConduitOptions.Options))
+            {
+                deleteContext.Comments.Remove(comment);
+            }
+            _context.Entry(comment).State = EntityState.Deleted;
+        }
     }
 }
