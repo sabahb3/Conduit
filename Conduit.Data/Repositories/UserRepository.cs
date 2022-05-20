@@ -117,6 +117,9 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> IsArticlePreferred(string username, int articleId)
     {
-         throw new NotImplementedException();
+        var count =await _conduitDbContext.Users.Where(u => u.Username == username)
+            .Select(u=>u.UsersFavoriteArticles.Count(f=>f.ArticleId==articleId))
+            .FirstOrDefaultAsync();
+        return count > 0;
     }
 }
