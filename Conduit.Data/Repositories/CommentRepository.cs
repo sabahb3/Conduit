@@ -73,6 +73,9 @@ public class CommentRepository :ICommentRepository
 
     public async Task DeleteComments()
     {
-        throw new NotImplementedException();
+        foreach (var comment in _context.Comments)
+        {
+            await DeleteComment(comment.Id);
+        }
     }
 }
