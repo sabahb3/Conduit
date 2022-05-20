@@ -81,6 +81,10 @@ public class CommentRepository :ICommentRepository
 
     public async Task DeleteArticleComments(int articleId)
     {
-        throw new NotImplementedException();
+        var articleComments = await ReadArticleComments(articleId);
+        foreach (var comment in articleComments)
+        {
+            await DeleteComment(comment.Id);
+        }
     }
 }
