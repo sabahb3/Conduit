@@ -87,6 +87,8 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<int> CountWhoFavoriteArticle(int articleId)
     {
-        throw new NotImplementedException();
+        var count =await _context.Articles.Where(a => a.Id == articleId).
+            Select(a => a.UsersFavoriteArticles.Count).FirstOrDefaultAsync();
+        return count;
     }
 }
