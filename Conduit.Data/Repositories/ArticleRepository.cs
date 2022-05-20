@@ -71,8 +71,9 @@ public class ArticleRepository : IArticleRepository
             using (var deleteContext = new ConduitDbContext(_context.ConduitOptions.Options))
             {
                 deleteContext.Articles.Remove(article);
-                await deleteContext.SaveChangesAsync();
             }
+
+            _context.Entry(article).State = EntityState.Deleted;
         }
     }
 
