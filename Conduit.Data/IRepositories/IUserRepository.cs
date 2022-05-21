@@ -16,5 +16,5 @@ public interface IUserRepository
     public Task UpdateUsers(List<Users> updatedUsers);
     public Task<bool> IsArticlePreferred(string username, int articleId);
     public Task FavoriteArticle(string username, int articleId);
-
+    public Task UnfavoriteArticle(string username, int articleId);
 }

@@ -282,4 +282,24 @@ public class UserRepositoryTest
             Assert.True(newAttitude);
         }
     }
+    [Fact]
+    public async Task ShouldUnfavoriteArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UnfavoriteArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.IsArticlePreferred("Shaymaa", 1);
+            await userRepo.UnfavoriteArticle("Shaymaa", 1);
+            var affected = await userRepo.Save();
+            var newAttitude =  await userRepo.IsArticlePreferred("Shaymaa", 1);
+            
+            Assert.True(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.False(newAttitude);
+        }
+    }
 }

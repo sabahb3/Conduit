@@ -135,4 +135,9 @@ public class UserRepository : IUserRepository
             user.UsersFavoriteArticles.Add(favoriteArticle);
         }
     }
+
+    public async Task UnfavoriteArticle(string username, int articleId)
+    {
+        throw new NotImplementedException();
+    }
 }
