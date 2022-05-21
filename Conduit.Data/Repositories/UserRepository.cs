@@ -164,11 +164,16 @@ public class UserRepository : IUserRepository
         var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user != null)
         {
-            var followUser = new Followers
+           await  _conduitDbContext.Entry(user).Collection(f=>f.Followers).LoadAsync();
+            if (user.Followers.FirstOrDefault(f => f.FollowingId == followingName) == null)
             {
-                FollowingId = followingName
-            };
-            user.Followers.Add(followUser);
+                var followUser = new Followers
+                {
+                    FollowingId = followingName
+                };
+                user.Followers.Add(followUser);
+            }
+
         }
     }
 }
