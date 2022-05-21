@@ -153,6 +153,9 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> DoesFollow(string username, string followingName)
     {
-        throw new NotImplementedException();
+        var count =await _conduitDbContext.Users.Where(u => u.Username == username)
+            .Select(u=>u.Followers.FirstOrDefault(f=>f.FollowingId==followingName))
+            .FirstOrDefaultAsync();
+        return count != null;
     }
 }
