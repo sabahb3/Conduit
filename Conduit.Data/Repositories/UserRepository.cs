@@ -150,4 +150,44 @@ public class UserRepository : IUserRepository
             _conduitDbContext.Entry(unfavoriteArticle).State = EntityState.Deleted;
         }
     }
+
+    public async Task<bool> DoesFollow(string username, string followingName)
+    {
+        var count =await _conduitDbContext.Users.Where(u => u.Username == username)
+            .Select(u=>u.Followers.FirstOrDefault(f=>f.FollowingId==followingName))
+            .FirstOrDefaultAsync();
+        return count != null;
+    }
+
+    public async Task FollowUser(string username, string followingName)
+    {
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+           await  _conduitDbContext.Entry(user).Collection(f=>f.Followers).LoadAsync();
+            if (user.Followers.FirstOrDefault(f => f.FollowingId == followingName) == null)
+            {
+                var followUser = new Followers
+                {
+                    FollowingId = followingName
+                };
+                user.Followers.Add(followUser);
+            }
+
+        }
+    }
+
+    public async Task UnfollowUser(string username, string followerName)
+    {
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var item = user.Followers.FirstOrDefault(u => u.Username == username && u.FollowingId == followerName);
+            if (item != null)
+            {
+                user.Followers.Remove(item);
+                _conduitDbContext.Entry(item).State = EntityState.Deleted;
+            }
+        }
+    }
 }

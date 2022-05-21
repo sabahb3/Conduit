@@ -256,8 +256,8 @@ public class UserRepositoryTest
             context.Database.EnsureCreated();
             var userRepo = new UserRepository(context);
 
-            var DoesPrefer = await userRepo.IsArticlePreferred("Shaymaa", 1);
-            Assert.True(DoesPrefer);
+            var doesPrefer = await userRepo.IsArticlePreferred("Shaymaa", 1);
+            Assert.True(doesPrefer);
             
         }
     }
@@ -302,4 +302,78 @@ public class UserRepositoryTest
             Assert.False(newAttitude);
         }
     }
+
+    [Fact]
+    public async Task ShouldTellIfFollowingUser()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UnfavoriteArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+
+            var isFollow = await userRepo.DoesFollow("Shaymaa", "Sabah");
+            var isUnfollow = await userRepo.DoesFollow("Shaymaa", "Hala");
+            Assert.True(isFollow);
+            Assert.False(isUnfollow);
+        }
+    }
+    [Fact]
+    public async Task ShouldFollowUser()
+    {
+        _optionsBuilder.UseInMemoryDatabase("FollowUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.DoesFollow("Hala", "Shaymaa");
+            await userRepo.FollowUser("Hala","Shaymaa");
+            var affected = await userRepo.Save();
+            var newAttitude =await userRepo.DoesFollow("Hala", "Shaymaa");
+            
+            Assert.False(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.True(newAttitude);
+        }
+    }
+    [Fact]
+    public async Task ShouldNotFollowUser()
+    {
+        _optionsBuilder.UseInMemoryDatabase("FollowUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            await userRepo.FollowUser("Shaymaa", "Sabah");
+            
+            var affectd = await userRepo.Save();
+            Assert.Equal(0,affectd);
+        }
+    }
+    [Fact]
+    public async Task ShouldUnfollowUser()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UnfollowUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.DoesFollow("Shaymaa", "Sabah");
+            await userRepo.UnfollowUser("Shaymaa", "Sabah");
+            var affected = await userRepo.Save();
+            var newAttitude =  await userRepo.DoesFollow("Shaymaa", "Sabah");
+            
+            Assert.True(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.False(newAttitude);
+        }
+    }
 }
+
