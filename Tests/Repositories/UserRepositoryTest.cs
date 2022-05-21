@@ -256,8 +256,8 @@ public class UserRepositoryTest
             context.Database.EnsureCreated();
             var userRepo = new UserRepository(context);
 
-            var DoesPrefer = await userRepo.IsArticlePreferred("Shaymaa", 1);
-            Assert.True(DoesPrefer);
+            var doesPrefer = await userRepo.IsArticlePreferred("Shaymaa", 1);
+            Assert.True(doesPrefer);
             
         }
     }
@@ -302,4 +302,22 @@ public class UserRepositoryTest
             Assert.False(newAttitude);
         }
     }
+
+    [Fact]
+    public async Task ShouldTellIfFollowingUser()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UnfavoriteArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+
+            var isFollow = await userRepo.DoesFollow("Shaymaa", "Sabah");
+            var isUnfollow = await userRepo.DoesFollow("Shaymaa", "Hala");
+            Assert.True(isFollow);
+            Assert.False(isUnfollow);
+        }
+    }
+
 }

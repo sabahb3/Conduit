@@ -150,4 +150,9 @@ public class UserRepository : IUserRepository
             _conduitDbContext.Entry(unfavoriteArticle).State = EntityState.Deleted;
         }
     }
+
+    public async Task<bool> DoesFollow(string username, string followingName)
+    {
+        throw new NotImplementedException();
+    }
 }

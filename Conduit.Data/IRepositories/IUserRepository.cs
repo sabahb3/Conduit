@@ -17,4 +17,5 @@ public interface IUserRepository
     public Task<bool> IsArticlePreferred(string username, int articleId);
     public Task FavoriteArticle(string username, int articleId);
     public Task UnfavoriteArticle(string username, int articleId);
+    public Task<bool> DoesFollow(string username, string followingName);
 }
