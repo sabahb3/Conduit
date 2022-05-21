@@ -158,4 +158,9 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync();
         return count != null;
     }
+
+    public async Task FollowUser(string username, string followingName)
+    {
+        throw new NotImplementedException();
+    }
 }
