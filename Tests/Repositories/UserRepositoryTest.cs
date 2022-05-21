@@ -245,4 +245,61 @@ public class UserRepositoryTest
             Assert.All(context.Users.Select(u=>u.Password),u=>Assert.Equal( "1212",u));
         }
     }
+
+    [Fact]
+    public async Task ShouldTellIfUserPreferArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("GetUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+
+            var DoesPrefer = await userRepo.IsArticlePreferred("Shaymaa", 1);
+            Assert.True(DoesPrefer);
+            
+        }
+    }
+
+    [Fact]
+    public async Task ShouldFavoriteArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("FavoriteArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.IsArticlePreferred("Shaymaa", 2);
+            await userRepo.FavoriteArticle("Shaymaa", 2);
+            var affected = await userRepo.Save();
+            var newAttitude =  await userRepo.IsArticlePreferred("Shaymaa", 2);
+            
+            Assert.False(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.True(newAttitude);
+        }
+    }
+    [Fact]
+    public async Task ShouldUnfavoriteArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UnfavoriteArticle");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.IsArticlePreferred("Shaymaa", 1);
+            await userRepo.UnfavoriteArticle("Shaymaa", 1);
+            var affected = await userRepo.Save();
+            var newAttitude =  await userRepo.IsArticlePreferred("Shaymaa", 1);
+            
+            Assert.True(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.False(newAttitude);
+        }
+    }
 }

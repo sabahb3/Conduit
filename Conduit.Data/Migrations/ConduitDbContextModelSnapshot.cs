@@ -53,7 +53,7 @@ namespace Conduit.Data.Migrations
 
                     b.HasIndex("Username");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
 
                     b.HasData(
                         new
@@ -97,7 +97,7 @@ namespace Conduit.Data.Migrations
 
                     b.HasIndex("Tag");
 
-                    b.ToTable("ArticlesTags");
+                    b.ToTable("ArticlesTags", (string)null);
 
                     b.HasData(
                         new
@@ -145,7 +145,7 @@ namespace Conduit.Data.Migrations
 
                     b.HasIndex("Username");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
 
                     b.HasData(
                         new
@@ -186,7 +186,7 @@ namespace Conduit.Data.Migrations
 
                     b.HasIndex("FollowingId");
 
-                    b.ToTable("Followers");
+                    b.ToTable("Followers", (string)null);
 
                     b.HasData(
                         new
@@ -213,7 +213,7 @@ namespace Conduit.Data.Migrations
 
                     b.HasKey("Tag");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
 
                     b.HasData(
                         new
@@ -257,7 +257,7 @@ namespace Conduit.Data.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -295,7 +295,7 @@ namespace Conduit.Data.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.ToTable("UsersFavoriteArticles");
+                    b.ToTable("UsersFavoriteArticles", (string)null);
 
                     b.HasData(
                         new

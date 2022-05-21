@@ -114,4 +114,40 @@ public class UserRepository : IUserRepository
             await UpdateUser(user);
         }
     }
+
+    public async Task<bool> IsArticlePreferred(string username, int articleId)
+    {
+        var count =await _conduitDbContext.Users.Where(u => u.Username == username)
+            .Select(u=>u.UsersFavoriteArticles.Count(f=>f.ArticleId==articleId))
+            .FirstOrDefaultAsync();
+        return count > 0;
+    }
+
+    public async Task FavoriteArticle(string username, int articleId)
+    {
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var favoriteArticle = new UsersFavoriteArticles
+            {
+                ArticleId = articleId
+            };
+            user.UsersFavoriteArticles.Add(favoriteArticle);
+        }
+    }
+
+    public async Task UnfavoriteArticle(string username, int articleId)
+    {
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var unfavoriteArticle = new UsersFavoriteArticles
+            {
+                ArticleId = articleId,
+                Username = username
+            };
+            user.UsersFavoriteArticles.Remove(unfavoriteArticle);
+            _conduitDbContext.Entry(unfavoriteArticle).State = EntityState.Deleted;
+        }
+    }
 }

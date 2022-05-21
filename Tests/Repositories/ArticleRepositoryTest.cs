@@ -223,4 +223,20 @@ public class ArticleRepositoryTest
             Assert.Empty(context.Articles);
         }
     }
+    [Fact]
+    public async Task ShouldCountWhoFavoriteArticle()
+    {
+        _optionsBuilder.UseInMemoryDatabase("CountUsers");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var articleRepo = new ArticleRepository(context);
+
+            var countWhoPrefer = await articleRepo.CountWhoFavoriteArticle(1);
+            
+            Assert.Equal(2,countWhoPrefer);
+        }
+
+    }
 }
