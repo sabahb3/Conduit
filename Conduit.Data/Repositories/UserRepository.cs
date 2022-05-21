@@ -125,6 +125,14 @@ public class UserRepository : IUserRepository
 
     public async Task FavoriteArticle(string username, int articleId)
     {
-        throw new NotImplementedException();
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var favoriteArticle = new UsersFavoriteArticles
+            {
+                ArticleId = articleId
+            };
+            user.UsersFavoriteArticles.Add(favoriteArticle);
+        }
     }
 }
