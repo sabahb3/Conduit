@@ -179,6 +179,15 @@ public class UserRepository : IUserRepository
 
     public async Task UnfollowUser(string username, string followerName)
     {
-        throw new NotImplementedException();
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var item = user.Followers.FirstOrDefault(u => u.Username == username && u.FollowingId == followerName);
+            if (item != null)
+            {
+                user.Followers.Remove(item);
+                _conduitDbContext.Entry(item).State = EntityState.Deleted;
+            }
+        }
     }
 }
