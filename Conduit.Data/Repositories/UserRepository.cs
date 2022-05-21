@@ -176,4 +176,9 @@ public class UserRepository : IUserRepository
 
         }
     }
+
+    public async Task UnfollowUser(string username, string followerName)
+    {
+        throw new NotImplementedException();
+    }
 }

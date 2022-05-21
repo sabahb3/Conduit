@@ -355,4 +355,25 @@ public class UserRepositoryTest
             Assert.Equal(0,affectd);
         }
     }
+    [Fact]
+    public async Task ShouldUnfollowUser()
+    {
+        _optionsBuilder.UseInMemoryDatabase("UnfollowUser");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var userRepo = new UserRepository(context);
+            
+            var oldAttitude = await userRepo.DoesFollow("Shaymaa", "Sabah");
+            await userRepo.UnfollowUser("Shaymaa", "Sabah");
+            var affected = await userRepo.Save();
+            var newAttitude =  await userRepo.DoesFollow("Shaymaa", "Sabah");
+            
+            Assert.True(oldAttitude);
+            Assert.Equal(1,affected);
+            Assert.False(newAttitude);
+        }
+    }
 }
+
