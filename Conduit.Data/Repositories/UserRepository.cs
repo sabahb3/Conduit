@@ -138,6 +138,16 @@ public class UserRepository : IUserRepository
 
     public async Task UnfavoriteArticle(string username, int articleId)
     {
-        throw new NotImplementedException();
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var unfavoriteArticle = new UsersFavoriteArticles
+            {
+                ArticleId = articleId,
+                Username = username
+            };
+            user.UsersFavoriteArticles.Remove(unfavoriteArticle);
+            _conduitDbContext.Entry(unfavoriteArticle).State = EntityState.Deleted;
+        }
     }
 }
