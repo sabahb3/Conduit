@@ -161,6 +161,14 @@ public class UserRepository : IUserRepository
 
     public async Task FollowUser(string username, string followingName)
     {
-        throw new NotImplementedException();
+        var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user != null)
+        {
+            var followUser = new Followers
+            {
+                FollowingId = followingName
+            };
+            user.Followers.Add(followUser);
+        }
     }
 }
