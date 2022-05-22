@@ -35,4 +35,32 @@ public class TagRepositoryTest
         }
     }
 
+    [Fact]
+    public async Task ShouldAddArticleTags()
+    {
+        _optionsBuilder.UseInMemoryDatabase("ArticleTage");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var tagRepo = new TagRepository(context);
+            var tagsToAdd = new List<Tags>
+            {
+                new Tags
+                {
+                    Tag = "Test1"
+                }
+            };
+            
+            var oldTags = await tagRepo.GetTags(1);
+            await tagRepo.AddTags(1, tagsToAdd);
+            await tagRepo.Save();
+            var newTags = await tagRepo.GetTags(1);
+            
+            Assert.NotEqual(oldTags,newTags);
+            Assert.Single(newTags);
+
+        }
+        
+    }
 }

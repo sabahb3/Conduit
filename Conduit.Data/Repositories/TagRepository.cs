@@ -31,4 +31,14 @@ public class TagRepository
         }
         return new List<string>();
     }
+
+    public async Task<int> Save()
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task AddTags(int articleId, List<Tags> tags)
+    {
+        throw new NotImplementedException();
+    }
 }
