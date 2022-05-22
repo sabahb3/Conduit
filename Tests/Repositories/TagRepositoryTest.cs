@@ -23,22 +23,15 @@ public class TagRepositoryTest
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             var tagRepo = new TagRepository(context);
-            var expected = new List<Tags>
+            var expected = new List<string>
             {
-                new Tags
-                {
-                    Tag = "Greetings"
-                },
-                new Tags
-                {
-                    Tag = "Welcoming"
-                }
-            };
+                "Greetings",
+                "Welcoming"
+                };
             
             var tags = await tagRepo.GetTags(1);
             
             Assert.Equal(expected,tags);
-
         }
     }
 
