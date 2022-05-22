@@ -63,4 +63,24 @@ public class TagRepositoryTest
         }
         
     }
+
+    [Fact]
+    public async Task ShouldGiveMostPopularTags()
+    {
+        _optionsBuilder.UseInMemoryDatabase("ArticleTage");
+        using (var context = new ConduitDbContext(_optionsBuilder.Options))
+        {
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            var tagRepo = new TagRepository(context);
+            var expected = new List<string>
+            {
+                "Greetings",
+                "Welcoming"
+            };
+            var actual = await tagRepo.GetPopularTag();
+            Assert.Equal(expected,actual);
+        }
+        
+    }
 }

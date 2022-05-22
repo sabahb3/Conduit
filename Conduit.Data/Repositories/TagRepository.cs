@@ -63,4 +63,11 @@ public class TagRepository
         }
         return articleTags;
     }
+
+    public async Task<List<string>> GetPopularTag()
+    {
+        return await _context.Set<ArticlesTags>().GroupBy(a => a.Tag)
+            .OrderByDescending(a => a.Count()).Take(4)
+            .Select(t=>t.Key).ToListAsync();
+    }
 }
