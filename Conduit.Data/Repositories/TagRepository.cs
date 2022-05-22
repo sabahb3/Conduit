@@ -42,6 +42,13 @@ public class TagRepository
         var article = await _context.Articles.FindAsync(articleId);
         if (article!=null)
         {
+            foreach (var tag in tags)
+            {
+                if (await _context.Tags.FirstOrDefaultAsync(t=>t.Tag==tag.Tag)!=null)
+                {
+                    _context.Tags.Add(tag);
+                }
+            }
             var articleTags =  tags.Select(t => new ArticlesTags
             {
                 Tags = t
