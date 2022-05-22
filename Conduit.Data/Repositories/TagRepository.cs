@@ -42,18 +42,25 @@ public class TagRepository
         var article = await _context.Articles.FindAsync(articleId);
         if (article!=null)
         {
-            foreach (var tag in tags)
-            {
-                if (await _context.Tags.FirstOrDefaultAsync(t=>t.Tag==tag.Tag)!=null)
-                {
-                    _context.Tags.Add(tag);
-                }
-            }
-            var articleTags =  tags.Select(t => new ArticlesTags
-            {
-                Tags = t
-            }).ToList();
-            article.ArticlesTags = articleTags;
+
+            article.ArticlesTags = await SetUpTags(tags);
         }
+    }
+
+    public async Task<List<ArticlesTags>> SetUpTags(List<Tags> tags)
+    {
+        List<ArticlesTags> articleTags = new List<ArticlesTags>();
+        foreach (var tag in tags)
+        {
+            if (await _context.Tags.FirstOrDefaultAsync(t=>t.Tag==tag.Tag) == null)
+            {
+                _context.Tags.Add(tag);
+            }
+            articleTags.Add(new ArticlesTags
+            {
+                Tags = tag
+            });
+        }
+        return articleTags;
     }
 }
