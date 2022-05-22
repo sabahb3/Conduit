@@ -34,11 +34,19 @@ public class TagRepository
 
     public async Task<int> Save()
     {
-        throw new NotImplementedException();
+        return await _context.SaveChangesAsync();
     }
 
     public async Task AddTags(int articleId, List<Tags> tags)
     {
-        throw new NotImplementedException();
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article!=null)
+        {
+            var articleTags =  tags.Select(t => new ArticlesTags
+            {
+                Tags = t
+            }).ToList();
+            article.ArticlesTags = articleTags;
+        }
     }
 }
