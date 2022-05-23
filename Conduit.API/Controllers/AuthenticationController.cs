@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using Conduit.API.Credentials;
 using Conduit.Data.IRepositories;
 using Conduit.Domain;
@@ -17,11 +18,13 @@ public class AuthenticationController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public AuthenticationController(IConfiguration configuration, IUserRepository userRepository)
+    public AuthenticationController(IConfiguration configuration, IUserRepository userRepository,IMapper mapper)
     {
         _configuration = configuration;
         _userRepository = userRepository;
+        _mapper = mapper;
     }
     /// <summary>
     /// Login to Conduit
@@ -60,5 +63,20 @@ public class AuthenticationController : ControllerBase
             signingCredentials:credential
         );
         return new JwtSecurityTokenHandler().WriteToken(token); 
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Register(RegistrationCredentials registrationCredentials)
+    {
+        var user = _mapper.Map<Users>(registrationCredentials);
+        var creatingUser = await _userRepository.CreateUser(user);
+        if (creatingUser.isValid)
+        {
+            var token = GenerateToken(user);
+            await _userRepository.Save();
+            return Ok(token);
+        }
+        return NotFound(creatingUser.message);
     }
 }
