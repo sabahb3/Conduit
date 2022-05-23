@@ -190,4 +190,10 @@ public class UserRepository : IUserRepository
             }
         }
     }
+
+    public async Task<Users?> CheckUser(string email, string password)
+    {
+        return await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+    }
+
 }

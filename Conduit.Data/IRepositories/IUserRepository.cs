@@ -20,4 +20,5 @@ public interface IUserRepository
     public Task<bool> DoesFollow(string username, string followingName);
     public Task FollowUser(string username, string followingName);
     public Task UnfollowUser(string username, string followerName);
+    public Task<Users?> CheckUser(string email, string password);
 }
