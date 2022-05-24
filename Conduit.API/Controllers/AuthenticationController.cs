@@ -74,7 +74,7 @@ public class AuthenticationController : ControllerBase
         if (creatingUser.isValid)
         {
             var token = GenerateToken(user);
-            await _userRepository.Save();
+            var save = await _userRepository.Save();
             return Ok(token);
         }
         return NotFound(creatingUser.message);
