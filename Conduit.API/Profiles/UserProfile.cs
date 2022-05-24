@@ -14,5 +14,7 @@ public class UserProfile : Profile
             des=>des.Image,
             opt=>opt.MapFrom(src=>src.ProfilePicture)
             );
+        CreateMap<Users,UserForUpdatingDto>();
+        CreateMap<UserForUpdatingDto,Users>();
     }
 }
