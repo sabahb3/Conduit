@@ -40,6 +40,60 @@ public class UserController : ControllerBase
         userToReturn.Token = token!;
         return Ok(userToReturn);
     }
+        /// <summary>
+    /// Partially update user
+    /// </summary>
+    /// <param name="patchDocument">The set of operations to apply on the user</param>
+    /// <returns> </returns>
+    /// <remarks>
+    /// Sample Request : This will update user username  
+    ///```  
+    /// [  
+    /// {  
+    ///    "op": "replace",  
+    ///    "path": "/username",  
+    ///    "value": "sab"  
+    /// }  
+    /// ]  
+    ///```  
+    /// </remarks>>
+    [HttpPatch]
+    public async Task<IActionResult> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto>patchDocument)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity == null) return Unauthorized();
+        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUser(userName!);
+        if (user == null) return NotFound();
+        var userToUpdate = _mapper.Map<UserForUpdatingDto>(user);
+        patchDocument.ApplyTo(userToUpdate);
+        if (!TryValidateModel((userToUpdate)))
+        {
+            return ValidationProblem(ModelState);
+        }
+        _mapper.Map(userToUpdate, user);
+        await _userRepository.UpdateUser(user);
+        await _userRepository.Save();
+        return Ok(user);
+    }
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [HttpPut]
+    public async Task<IActionResult> UpdateUser([FromBody]UserForUpdatingDto userForUpdatingDto)
+    {
+        var validator = new UserEditingValidator();  
+        var validRes = validator.Validate(userForUpdatingDto); 
+        if (!validRes.IsValid) return ValidationProblem(ModelState);
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity == null) return Unauthorized();
+        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUser(userName!);
+        if (user == null) return NotFound();
+        _mapper.Map(userForUpdatingDto, user);
+        await _userRepository.UpdateUser(user);
+        await _userRepository.Save();
+        Console.WriteLine(user);
+        return Ok(user);
+    }
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
         Console.WriteLine($"{modelStateDictionary.ValidationState} {modelStateDictionary.IsValid}");

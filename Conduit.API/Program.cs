@@ -37,6 +37,10 @@ builder.Services.AddControllers(option=>
     option.Filters.Add(new AuthorizeFilter());
     option.ReturnHttpNotAcceptable = true;
 })
+    .AddNewtonsoftJson(setup =>
+    {
+        setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    })
     .ConfigureApiBehaviorOptions(opt =>
     {
         opt.InvalidModelStateResponseFactory = (context) =>
