@@ -177,6 +177,7 @@ public class UserRepository : IUserRepository
         var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user != null)
         {
+            _conduitDbContext.Entry(user).State = EntityState.Unchanged;
            await  _conduitDbContext.Entry(user).Collection(f=>f.Followers).LoadAsync();
             if (user.Followers.FirstOrDefault(f => f.FollowingId == followingName) == null)
             {
@@ -195,6 +196,8 @@ public class UserRepository : IUserRepository
         var user = await _conduitDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user != null)
         {
+            _conduitDbContext.Entry(user).State = EntityState.Unchanged;
+            await  _conduitDbContext.Entry(user).Collection(f=>f.Followers).LoadAsync();
             var item = user.Followers.FirstOrDefault(u => u.Username == username && u.FollowingId == followerName);
             if (item != null)
             {

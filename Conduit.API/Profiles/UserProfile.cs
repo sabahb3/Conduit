@@ -9,12 +9,16 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
-        CreateMap<RegistrationCredentials,Users>();
+        CreateMap<RegistrationCredentials, Users>();
         CreateMap<Users, UserForReturningDto>().ForMember(
-            des=>des.Image,
+            des => des.Image,
+            opt => opt.MapFrom(src => src.ProfilePicture)
+        );
+        CreateMap<Users, UserForUpdatingDto>();
+        CreateMap<UserForUpdatingDto, Users>();
+        CreateMap<Users,ProfileDto>().ForMember(
+            des=>des.image,
             opt=>opt.MapFrom(src=>src.ProfilePicture)
             );
-        CreateMap<Users,UserForUpdatingDto>();
-        CreateMap<UserForUpdatingDto,Users>();
     }
 }
