@@ -20,12 +20,37 @@ public class ProfilesController :ControllerBase
         _mapper = mapper;
     }
     [AllowAnonymous]
-    [HttpGet("{username}")]
+    [HttpGet("{username}",Name = "GetUserProfile")]
     public async Task<IActionResult> GetProfile(string username)
+    {
+        var profile =await PrepareProfile(username);
+        return Ok(profile);
+    }
+
+    [HttpPost("{followerName}/follow")]
+    public async Task<IActionResult> FollowUser(string followerName)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity == null) return Unauthorized();
+        var username = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUser(username!);
+        if (user == null)
+            return NotFound();
+        var following = await _userRepository.GetUser(followerName);
+        if (following == null)
+            return NotFound();
+        await _userRepository.FollowUser(username!, followerName);
+        await _userRepository.Save();
+        var profile = await PrepareProfile(followerName);
+        return Ok(profile!);
+    }
+
+    [NonAction]
+    private async Task<ProfileDto?> PrepareProfile(string username)
     {
         var userEntity = await _userRepository.GetUser(username);
         if (userEntity == null)
-            return NotFound();
+            return null;
         var profile=_mapper.Map<ProfileDto>(userEntity);
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         if (identity != null)
@@ -33,6 +58,6 @@ public class ProfilesController :ControllerBase
             var userIdentity = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
             profile.Following= await _userRepository.DoesFollow(userIdentity!,username);
         }
-        return Ok(profile);
+        return profile;
     }
 }
