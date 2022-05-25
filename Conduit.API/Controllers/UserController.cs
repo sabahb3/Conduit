@@ -72,8 +72,13 @@ public class UserController : ControllerBase
             return ValidationProblem(ModelState);
         }
         _mapper.Map(userToUpdate, user);
-        await _userRepository.UpdateUser(user);
-        await _userRepository.Save();
+        await _userRepository.UpdateUser(user,userName!);
+        var affected= await _userRepository.Save();
+        if (affected == 0)
+        {
+            var unUpdatedUser =await _userRepository.GetUser(userName!);
+            return Ok(unUpdatedUser);
+        }
         return Ok(user);
     }
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -89,9 +94,13 @@ public class UserController : ControllerBase
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
         _mapper.Map(userForUpdatingDto, user);
-        await _userRepository.UpdateUser(user);
-        await _userRepository.Save();
-        Console.WriteLine(user);
+        await _userRepository.UpdateUser(user,userName!);
+       var affected= await _userRepository.Save();
+       if (affected == 0)
+       {
+           var unUpdatedUser =await _userRepository.GetUser(userName!);
+           return Ok(unUpdatedUser);
+       }
         return Ok(user);
     }
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)

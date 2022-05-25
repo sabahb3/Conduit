@@ -108,13 +108,13 @@ public class UserRepository : IUserRepository
             var isUnique = await IsUniqueEmail(updatedUser.Email);
             if (!isUnique) return null;
         }
+        user?.AssignUser(updatedUser);
         if (username != updatedUser.Username)
         {
             var isExists = await IsExists(updatedUser.Username);
             if (isExists) return null;
+            //todo Change username.
         }
-        
-        user?.AssignUser(updatedUser);
         return user;
     }
 
