@@ -45,6 +45,24 @@ public class ProfilesController :ControllerBase
         return Ok(profile!);
     }
 
+    [HttpDelete("{followerName}/follow")]
+    public async Task<ActionResult<ProfileDto>> UnfollowUser(string followerName)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity == null) return Unauthorized();
+        var username = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUser(username!);
+        if (user == null)
+            return NotFound();
+        var following = await _userRepository.GetUser(followerName);
+        if (following == null)
+            return NotFound();
+        await _userRepository.UnfollowUser(username!, followerName);
+        await _userRepository.Save();
+        var profile = await PrepareProfile(followerName);
+        return Ok(profile!); 
+    }
+
     [NonAction]
     private async Task<ProfileDto?> PrepareProfile(string username)
     {
