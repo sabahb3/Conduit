@@ -1,10 +1,14 @@
 using System.Security.Claims;
 using AutoMapper;
+using Conduit.API.Validators;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
-using Conduit.Domain;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
 
 namespace Conduit.API.Controllers;
 
@@ -26,19 +30,20 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var user = await GetAuthenticatedUser();
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity == null) return null;
+        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUser(userName!);
         if (user == null) return Unauthorized();
         var userToReturn = _mapper.Map<UserForReturningDto>(user!);
         var token = await HttpContext.GetTokenAsync("access_token");
         userToReturn.Token = token!;
         return Ok(userToReturn);
     }
-    
-    public async Task<Users?> GetAuthenticatedUser()
+    public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity == null) return null;
-        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
-        return await _userRepository.GetUser(userName!);
+        Console.WriteLine($"{modelStateDictionary.ValidationState} {modelStateDictionary.IsValid}");
+        var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
+        return (ActionResult) options.Value.InvalidModelStateResponseFactory(ControllerContext);
     }
 }
