@@ -103,6 +103,7 @@ public class UserRepository : IUserRepository
     public async Task<Users?> UpdateUser(Users updatedUser,string username)
     {
         var user = await _conduitDbContext.Users.FindAsync(username);
+        if (updatedUser.Bio == null && user.Bio != null) return null;
         if (user!.Email != updatedUser.Email)
         {
             var isUnique = await IsUniqueEmail(updatedUser.Email);
