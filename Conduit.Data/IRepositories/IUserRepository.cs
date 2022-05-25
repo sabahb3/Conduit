@@ -12,8 +12,8 @@ public interface IUserRepository
     public Task<bool> IsExists(string username);
     public Task<Users?> GetUser(string username);
     public Task<IEnumerable<Users>> GetAllUsers();
-    public Task<Users?> UpdateUser(Users updatedUser);
-    public Task UpdateUsers(List<Users> updatedUsers);
+    public Task<Users?> UpdateUser(Users updatedUser,string username);
+    public Task UpdateUsers(List<Users> updatedUsers,List<string>usernames);
     public Task<bool> IsArticlePreferred(string username, int articleId);
     public Task FavoriteArticle(string username, int articleId);
     public Task UnfavoriteArticle(string username, int articleId);

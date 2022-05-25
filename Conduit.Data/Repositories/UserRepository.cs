@@ -100,18 +100,31 @@ public class UserRepository : IUserRepository
         return await _conduitDbContext.Users.ToListAsync();
     }
 
-    public async Task<Users?> UpdateUser(Users updatedUser)
+    public async Task<Users?> UpdateUser(Users updatedUser,string username)
     {
-        var user = await _conduitDbContext.Users.FindAsync(updatedUser.Username);
+        var user = await _conduitDbContext.Users.FindAsync(username);
+        if (updatedUser.Bio == null && user.Bio != null) return null;
+        if (user!.Email != updatedUser.Email)
+        {
+            var isUnique = await IsUniqueEmail(updatedUser.Email);
+            if (!isUnique) return null;
+        }
         user?.AssignUser(updatedUser);
+        if (username != updatedUser.Username)
+        {
+            var isExists = await IsExists(updatedUser.Username);
+            if (isExists) return null;
+            //todo Change username.
+        }
         return user;
     }
 
-    public async Task UpdateUsers(List<Users> updatedUsers)
+    public async Task UpdateUsers(List<Users> updatedUsers,List<string>usernames)
     {
-        foreach (var user in updatedUsers)
+        if (updatedUsers.Count != usernames.Count) return;
+        for (int i = 0; i < updatedUsers.Count; i++)
         {
-            await UpdateUser(user);
+            await UpdateUser(updatedUsers[i], usernames[i]);
         }
     }
 
