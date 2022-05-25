@@ -189,7 +189,7 @@ public class UserRepositoryTest
                 ProfilePicture = "Updated photo",
                 Password = 1212.ToString()
             };
-            await userRepo.UpdateUser(updatedUser);
+            await userRepo.UpdateUser(updatedUser,userToUpdate.Username);
             var affectedUser = await userRepo.Save();
             Assert.Equal("sabah", userToUpdate!.Username);
             Assert.Equal("sabahb399@gmail.com", userToUpdate.Email);
@@ -236,7 +236,13 @@ public class UserRepositoryTest
                     Password = 1212.ToString()
                 }
             };
-            await userRepo.UpdateUsers(updatedUsers);
+            var usernames = new List<string>
+            {
+                "sabah",
+                "Hala",
+                "Shaymaa"
+            };
+            await userRepo.UpdateUsers(updatedUsers,usernames);
             var affectedUser = await userRepo.Save();
             Assert.Equal(3,affectedUser);
             Assert.All(context.Users.Select(u=>u.Email),u=>Assert.Equal( "test@gmail.com",u));
