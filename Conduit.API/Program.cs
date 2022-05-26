@@ -91,6 +91,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ConduitDbContext>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
+builder.Services.AddTransient<ITagRepository, TagRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
