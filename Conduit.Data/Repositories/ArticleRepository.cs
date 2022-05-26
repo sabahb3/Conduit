@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+using Conduit.API.ResourceParameters;
 using Conduit.Data.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Domain;
@@ -43,9 +45,9 @@ public class ArticleRepository : IArticleRepository
         return await _context.Articles.FindAsync(articleId);
     }
 
-    public async Task<List<Articles>> GetAllArticles()
+    public async Task<List<Articles>> GetAllArticles(int offset, int limit)
     {
-        return await _context.Articles.ToListAsync();
+        return await _context.Articles.OrderByDescending(a=>a.Date).Skip(offset).Take(limit).ToListAsync();
     }
 
     public async Task<Articles?> UpdateArticle(Articles updatedArticle)
@@ -91,4 +93,44 @@ public class ArticleRepository : IArticleRepository
             Select(a => a.UsersFavoriteArticles.Count).FirstOrDefaultAsync();
         return count;
     }
+
+    public async Task<IEnumerable<Articles>> GetArticles(ArticleResourceParameter articleResourceParameter)
+    {
+        if (articleResourceParameter == null)
+            throw new ArgumentNullException();
+        articleResourceParameter.Limit ??= ArticleResourceParameter.PageSize;
+        articleResourceParameter.Offset ??= 0;
+        if (articleResourceParameter.IsFilteringNone())
+        {
+            return await GetAllArticles(articleResourceParameter.Offset.Value,articleResourceParameter.Limit.Value);
+        }
+        var articleCollection = _context.Articles.OrderByDescending(a=>a.Date) as IQueryable<Articles>;
+        if (!string.IsNullOrWhiteSpace(articleResourceParameter.Tag))
+        {
+            var tag = articleResourceParameter.Tag.Trim();
+            articleCollection = articleCollection.Where(a => a.ArticlesTags.Select(t=>t.Tag).Contains(tag));
+        }
+
+        if (!string.IsNullOrWhiteSpace(articleResourceParameter.Author))
+        {
+            var author = articleResourceParameter.Author.Trim();
+            articleCollection = articleCollection.Where(a => a.Username == author);
+        }
+
+        if (!string.IsNullOrWhiteSpace(articleResourceParameter.Favorited))
+        {
+            var favorited = articleResourceParameter.Favorited.Trim();
+            var articles = await GetFavorttedArticles(favorited);
+            articleCollection = articleCollection.Where(a => articles.Contains(a.Id));
+        }
+        articleCollection = articleCollection.Skip(articleResourceParameter.Offset.Value)
+            .Take(articleResourceParameter.Limit.Value);
+        return await articleCollection.ToListAsync();
+    }
+
+    public async Task<IEnumerable<int>> GetFavorttedArticles(string usermae)
+    {
+       return _context.Set<UsersFavoriteArticles>().Where(s=>s.Username==usermae).Select(a => a.ArticleId);
+    }
+    
 }
