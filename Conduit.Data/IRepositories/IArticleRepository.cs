@@ -17,4 +17,5 @@ public interface IArticleRepository
     public  Task RemoveArticle(int articleId);
     public Task RemoveArticles();
     public Task<int> CountWhoFavoriteArticle(int articleId);
+    public Task<Users?> GetAuthor(int articleId);
 }

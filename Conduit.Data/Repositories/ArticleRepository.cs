@@ -132,5 +132,12 @@ public class ArticleRepository : IArticleRepository
     {
        return _context.Set<UsersFavoriteArticles>().Where(s=>s.Username==usermae).Select(a => a.ArticleId);
     }
-    
+
+    public async Task<Users?> GetAuthor(int articleId)
+    {
+        var article= await _context.Articles.Include(a => a.User)
+            .FirstOrDefaultAsync(a=>a.Id==articleId);
+        if (article == null) return null;
+        return article.User;
+    }
 }
