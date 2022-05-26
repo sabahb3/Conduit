@@ -90,6 +90,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ConduitDbContext>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
