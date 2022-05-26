@@ -33,7 +33,7 @@ public class ArticlesController : ControllerBase
     {
         var articles = await _articleRepository.GetArticles(articleResourceParameter);
         var articlesToReturn = await PrepareArticles(articles);
-        return Ok(articlesToReturn);
+        return Ok(new {articles =articlesToReturn,articlesCount= articlesToReturn.Count()});
     }
 
     [NonAction]
@@ -65,6 +65,7 @@ public class ArticlesController : ControllerBase
         return await _articleRepository.DoesFavoriteArticle(username!, articleId);
     }
 
+    [NonAction]
     private async Task<ProfileDto?> PrepareProfile(string username)
     {
         var userEntity = await _userRepository.GetUser(username);
