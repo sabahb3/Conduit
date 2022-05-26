@@ -1,9 +1,10 @@
+using Conduit.Data.IRepositories;
 using Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Data.Repositories;
 
-public class TagRepository
+public class TagRepository : ITagRepository
 {
     private readonly ConduitDbContext _context;
 
