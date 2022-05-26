@@ -140,4 +140,9 @@ public class ArticleRepository : IArticleRepository
         if (article == null) return null;
         return article.User;
     }
+    public async Task<bool> DoesFavoriteArticle(string username, int articleId)
+    {
+        return await _context.Set<UsersFavoriteArticles>()
+            .AnyAsync(a => a.Username == username && a.ArticleId == articleId);
+    }
 }
