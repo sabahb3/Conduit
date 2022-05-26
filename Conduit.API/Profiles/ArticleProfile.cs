@@ -13,6 +13,9 @@ public class ArticleProfile : Profile
         CreateMap<Articles, ArticleToReturnDto>().ForMember(
             des=>des.Slug,
             opt=>opt.MapFrom(src=>src.Title)
-            );
+            )
+            .ForMember(des=>des.CreatedAt,
+                opt=>opt.MapFrom(src=>src.Date)
+                );
     }
 }
