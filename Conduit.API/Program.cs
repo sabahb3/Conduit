@@ -1,4 +1,5 @@
 using System.Text;
+using Conduit.API.Helper;
 using Conduit.API.Validators;
 using Conduit.Data;
 using Conduit.Data.IRepositories;
@@ -92,6 +93,7 @@ builder.Services.AddDbContext<ConduitDbContext>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
+builder.Services.AddTransient(typeof(UserIdentity));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
