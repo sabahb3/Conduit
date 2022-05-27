@@ -90,11 +90,9 @@ public class UserController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateUser([FromBody]UserForUpdatingDto userForUpdatingDto)
     {
-        var validator = new UserEditingValidator();  
-        var validRes = validator.Validate(userForUpdatingDto); 
-        if (!validRes.IsValid) return ValidationProblem(ModelState);
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (userName == null) return Unauthorized();
+        if(!TryValidateModel(userForUpdatingDto)) return ValidationProblem(ModelState);
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
         _mapper.Map(userForUpdatingDto, user);
