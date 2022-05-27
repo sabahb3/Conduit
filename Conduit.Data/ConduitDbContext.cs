@@ -128,6 +128,7 @@ public class ConduitDbContext : DbContext
                          or start a phone conversation with this simple greeting. 
                          You may be asking yourself: “What should I say instead of “hello?",
                 Date = new DateTime(2022,4,20),
+                UpdatingDate = new DateTime(2022,4,20),
                 Username = "Hala"
                 
             },
@@ -140,6 +141,7 @@ public class ConduitDbContext : DbContext
                         they usually don’t expect you to go into much detail. 
                         Think of the “How are you?” question as a simple way to get the conversation going.",
                 Date = new DateTime(2022,5,5),
+                UpdatingDate = new DateTime(2022,5,5),
                 Username = "Hala"
             },
             new Articles
@@ -151,6 +153,7 @@ public class ConduitDbContext : DbContext
                         back to your conversation partner.When you are meeting someone for the first time, 
                         it is considered polite to engage in this way.",
                 Date = new DateTime(2022,2,22),
+                UpdatingDate = new DateTime(2022,2,22),
                 Username = "Sabah"
             }
         );
