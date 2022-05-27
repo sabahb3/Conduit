@@ -103,7 +103,7 @@ public class UserRepository : IUserRepository
     public async Task<Users?> UpdateUser(Users updatedUser,string username)
     {
         var user = await _conduitDbContext.Users.FindAsync(username);
-        if (updatedUser.Bio == null && user.Bio != null) return null;
+        if (string.IsNullOrWhiteSpace(updatedUser.Bio) && !string.IsNullOrWhiteSpace(user!.Bio)) return null;
         if (user!.Email != updatedUser.Email)
         {
             var isUnique = await IsUniqueEmail(updatedUser.Email);
@@ -116,6 +116,7 @@ public class UserRepository : IUserRepository
             if (isExists) return null;
             //todo Change username.
         }
+        _conduitDbContext.Entry(user).State = EntityState.Modified;
         return user;
     }
 

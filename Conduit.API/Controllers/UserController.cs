@@ -74,12 +74,17 @@ public class UserController : ControllerBase
         _mapper.Map(userToUpdate, user);
         await _userRepository.UpdateUser(user,userName!);
         var affected= await _userRepository.Save();
+        var token = await HttpContext.GetTokenAsync("access_token");
         if (affected == 0)
         {
             var unUpdatedUser =await _userRepository.GetUser(userName!);
-            return Ok(unUpdatedUser);
+            var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
+            unUpdatedDto.Token = token!;
+            return Ok( unUpdatedDto);
         }
-        return Ok(user);
+        var userDto = _mapper.Map<UserForReturningDto>(user);
+        userDto.Token = token!;
+        return Ok(userDto);
     }
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPut]
@@ -95,12 +100,17 @@ public class UserController : ControllerBase
         _mapper.Map(userForUpdatingDto, user);
         await _userRepository.UpdateUser(user,userName!);
        var affected= await _userRepository.Save();
+       var token = await HttpContext.GetTokenAsync("access_token");
        if (affected == 0)
        {
            var unUpdatedUser =await _userRepository.GetUser(userName!);
-           return Ok(unUpdatedUser);
+           var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
+           unUpdatedDto.Token = token!;
+           return Ok( unUpdatedDto);
        }
-        return Ok(user);
+       var userDto = _mapper.Map<UserForReturningDto>(user);
+       userDto.Token = token!;
+       return Ok(userDto);
     }
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
