@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Conduit.API.Helper;
 using Conduit.API.ResourceParameters;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
@@ -16,15 +17,15 @@ public class ArticlesController : ControllerBase
     private readonly IArticleRepository _articleRepository;
     private readonly IMapper _mapper;
     private readonly ITagRepository _tagRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly UserIdentity _identity;
 
     public ArticlesController(IArticleRepository articleRepository, IMapper mapper, ITagRepository tagRepository,
-        IUserRepository userRepository)
+        UserIdentity identity)
     {
         _articleRepository = articleRepository;
         _mapper = mapper;
         _tagRepository = tagRepository;
-        _userRepository = userRepository;
+        _identity = identity;
     }
 
     [HttpGet]
@@ -51,7 +52,7 @@ public class ArticlesController : ControllerBase
         articleToReturn.TagList = await _tagRepository.GetTags(article.Id) as List<string>;
         articleToReturn.FavoritesCount = await _articleRepository.CountWhoFavoriteArticle(article.Id);
         var user = await _articleRepository.GetAuthor(article.Id);
-        articleToReturn.Author = await PrepareProfile(user!.Username);
+        articleToReturn.Author = await _identity.PrepareProfile(HttpContext.User.Identity,user!.Username);
         articleToReturn.Favorited = await IsFavorited(article.Id);
         return articleToReturn;
     }
@@ -59,26 +60,8 @@ public class ArticlesController : ControllerBase
     [NonAction]
     public async Task<bool> IsFavorited(int articleId)
     {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity == null) return false;
-        var username = identity.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return false;
         return await _articleRepository.DoesFavoriteArticle(username!, articleId);
-    }
-
-    [NonAction]
-    private async Task<ProfileDto?> PrepareProfile(string username)
-    {
-        var userEntity = await _userRepository.GetUser(username);
-        if (userEntity == null)
-            return null;
-        var profile = _mapper.Map<ProfileDto>(userEntity);
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity != null)
-        {
-            var userIdentity = identity.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            profile.Following = await _userRepository.DoesFollow(userIdentity!, username);
-        }
-
-        return profile;
     }
 }

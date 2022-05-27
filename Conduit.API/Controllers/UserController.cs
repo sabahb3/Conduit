@@ -1,5 +1,5 @@
-using System.Security.Claims;
 using AutoMapper;
+using Conduit.API.Helper;
 using Conduit.API.Validators;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
@@ -19,22 +19,23 @@ public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly UserIdentity _userIdentity;
 
-    public UserController(IUserRepository userRepository,IMapper mapper)
+    public UserController(IUserRepository userRepository,IMapper mapper,UserIdentity userIdentity)
     {
         _userRepository = userRepository;
         _mapper = mapper;
+        _userIdentity = userIdentity;
     }
     
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity == null) return null;
-        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        if (userName == null) return Unauthorized();
         var user = await _userRepository.GetUser(userName!);
-        if (user == null) return Unauthorized();
+        if (user == null) return NotFound();
         var userToReturn = _mapper.Map<UserForReturningDto>(user!);
         var token = await HttpContext.GetTokenAsync("access_token");
         userToReturn.Token = token!;
@@ -60,9 +61,8 @@ public class UserController : ControllerBase
     [HttpPatch]
     public async Task<IActionResult> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto>patchDocument)
     {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity == null) return Unauthorized();
-        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        if (userName == null) return Unauthorized();
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
         var userToUpdate = _mapper.Map<UserForUpdatingDto>(user);
@@ -88,9 +88,8 @@ public class UserController : ControllerBase
         var validator = new UserEditingValidator();  
         var validRes = validator.Validate(userForUpdatingDto); 
         if (!validRes.IsValid) return ValidationProblem(ModelState);
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity == null) return Unauthorized();
-        var userName = identity.Claims.FirstOrDefault(o=>o.Type==ClaimTypes.NameIdentifier)?.Value;
+        var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        if (userName == null) return Unauthorized();
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
         _mapper.Map(userForUpdatingDto, user);
