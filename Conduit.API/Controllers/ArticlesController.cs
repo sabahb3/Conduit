@@ -32,7 +32,7 @@ public class ArticlesController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetArticles([FromQuery] ArticleResourceParameter? articleResourceParameter)
     {
-        var articles = await _articleRepository.GetArticles(articleResourceParameter);
+        var articles = await _articleRepository.GetArticles(_articleRepository.Articles, articleResourceParameter);
         var articlesToReturn = await PrepareArticles(articles);
         return Ok(new {articles =articlesToReturn,articlesCount= articlesToReturn.Count()});
     }
@@ -63,5 +63,18 @@ public class ArticlesController : ControllerBase
         var username = _identity.GetLoggedUser(HttpContext.User.Identity);
         if (username == null) return false;
         return await _articleRepository.DoesFavoriteArticle(username!, articleId);
+    }
+
+    [HttpGet("feed")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<IEnumerable<ArticleToReturnDto>>> GetFeedArticles([FromQuery] ArticleResourceParameter? articleResourceParameter)
+    {
+        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return Unauthorized();
+        if (!await _identity.IsExisted(username)) return NotFound();
+        var articles = await _articleRepository.GetFeedArticles(articleResourceParameter,username);
+        var articlesToReturn = await PrepareArticles(articles);
+        return Ok(new {articles =articlesToReturn,articlesCount= articlesToReturn.Count()});
     }
 }
