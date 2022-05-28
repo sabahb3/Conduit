@@ -37,4 +37,10 @@ public class UserIdentity : ControllerBase
         }
         return profile;
     }
+    public async Task<bool>IsExisted(string username)
+    {
+        username = username.Trim();
+        var user = await _userRepository.GetUser(username);
+        return user != null;
+    }
 }
