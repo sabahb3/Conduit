@@ -20,5 +20,9 @@ public class ArticleProfile : Profile
             .ForMember(des=>des.UpdatedAt,
                 opt=>opt.MapFrom(src=>src.UpdatingDate)
             );
+        CreateMap<ArticleForCreation, Articles>().ForMember(
+            des=>des.ArticlesTags,
+            opt=>opt.MapFrom(src=>src.Tags)
+            );
     }
 }
