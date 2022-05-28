@@ -107,7 +107,7 @@ public class ArticleRepositoryTest
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             var articleRepo = new ArticleRepository(context);
-            var articles = await articleRepo.GetAllArticles(0,20);
+            var articles = await articleRepo.GetAllArticles(articleRepo.Articles,0,20);
             Assert.Equal(3, articles.Count());
         }
     }

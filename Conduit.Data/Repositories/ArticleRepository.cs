@@ -11,6 +11,14 @@ public class ArticleRepository : IArticleRepository
 {
     private readonly ConduitDbContext _context;
 
+    public IQueryable<Articles> Articles
+    {
+        get
+        {
+            return _context.Articles;
+        }
+    }
+
     public ArticleRepository(ConduitDbContext context)
     {
         _context = context;
@@ -44,10 +52,10 @@ public class ArticleRepository : IArticleRepository
     {
         return await _context.Articles.FindAsync(articleId);
     }
-
-    public async Task<List<Articles>> GetAllArticles(int offset, int limit)
+    
+    public async Task<List<Articles>> GetAllArticles(IQueryable<Articles> articles, int offset, int limit)
     {
-        return await _context.Articles.OrderByDescending(a=>a.Date).Skip(offset).Take(limit).ToListAsync();
+        return await articles.OrderByDescending(a=>a.Date).Skip(offset).Take(limit).ToListAsync();
     }
 
     public async Task<Articles?> UpdateArticle(Articles updatedArticle)
@@ -94,7 +102,7 @@ public class ArticleRepository : IArticleRepository
         return count;
     }
 
-    public async Task<IEnumerable<Articles>> GetArticles(ArticleResourceParameter articleResourceParameter)
+    public async Task<IEnumerable<Articles>> GetArticles(IQueryable<Articles> allArticles,ArticleResourceParameter articleResourceParameter)
     {
         if (articleResourceParameter == null)
             throw new ArgumentNullException();
@@ -102,9 +110,9 @@ public class ArticleRepository : IArticleRepository
         articleResourceParameter.Offset ??= 0;
         if (articleResourceParameter.IsFilteringNone())
         {
-            return await GetAllArticles(articleResourceParameter.Offset.Value,articleResourceParameter.Limit.Value);
+            return await GetAllArticles(allArticles,articleResourceParameter.Offset.Value,articleResourceParameter.Limit.Value);
         }
-        var articleCollection = _context.Articles.OrderByDescending(a=>a.Date) as IQueryable<Articles>;
+        var articleCollection = allArticles.OrderByDescending(a=>a.Date) as IQueryable<Articles>;
         if (!string.IsNullOrWhiteSpace(articleResourceParameter.Tag))
         {
             var tag = articleResourceParameter.Tag.Trim();
