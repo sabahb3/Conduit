@@ -77,4 +77,15 @@ public class ArticlesController : ControllerBase
         var articlesToReturn = await PrepareArticles(articles);
         return Ok(new {articles =articlesToReturn,articlesCount= articlesToReturn.Count()});
     }
+
+    [AllowAnonymous]
+    [HttpGet("{slug}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Articles>> GetArticle(string slug)
+    {
+        var article = await _articleRepository.GetArticleBySlug(slug);
+        if (article == null) return NotFound();
+        return Ok(new { article = await PrepareArticle(article) });
+    }
 }

@@ -161,4 +161,11 @@ public class ArticleRepository : IArticleRepository
         var articles =  _context.Articles.Where(a => followed.Contains(a.Username));
         return await GetArticles(articles, articleResourceParameter);
     }
+
+    public async Task<Articles?> GetArticleBySlug(string slug)
+    {
+        var articleSlug = slug.Trim();
+        return await _context.Articles.FirstOrDefaultAsync(s => s.Title == articleSlug);
+    }
+
 }

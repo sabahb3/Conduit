@@ -21,5 +21,6 @@ public interface IArticleRepository
     public Task<int> CountWhoFavoriteArticle(int articleId);
     public Task<Users?> GetAuthor(int articleId);
     public Task<bool> DoesFavoriteArticle(string username, int articleId);
-    Task<IEnumerable<Articles>> GetFeedArticles(ArticleResourceParameter? articleResourceParameter, string username);
+    public Task<IEnumerable<Articles>> GetFeedArticles(ArticleResourceParameter? articleResourceParameter, string username);
+    public Task<Articles?> GetArticleBySlug(string slug);
 }
