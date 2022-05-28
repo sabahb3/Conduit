@@ -153,4 +153,12 @@ public class ArticleRepository : IArticleRepository
         return await _context.Set<UsersFavoriteArticles>()
             .AnyAsync(a => a.Username == username && a.ArticleId == articleId);
     }
+    public async Task<IEnumerable<Articles>> GetFeedArticles(ArticleResourceParameter? articleResourceParameter,
+        string username)
+    {
+        if (articleResourceParameter == null) throw new ArgumentNullException();
+        var followed = _context.Set<Followers>().Where(f => f.Username == username).Select(f=>f.FollowingId);
+        var articles =  _context.Articles.Where(a => followed.Contains(a.Username));
+        return await GetArticles(articles, articleResourceParameter);
+    }
 }
