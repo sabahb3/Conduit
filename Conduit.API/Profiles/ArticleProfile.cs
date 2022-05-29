@@ -22,7 +22,8 @@ public class ArticleProfile : Profile
             );
         CreateMap<ArticleForCreation, Articles>().ForMember(
             des=>des.ArticlesTags,
-            opt=>opt.MapFrom(src=>src.Tags)
+            opt=>
+                opt.MapFrom<ArticleTagsResolver>()
             );
     }
 }
