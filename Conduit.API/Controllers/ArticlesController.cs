@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Conduit.API;
@@ -85,7 +86,7 @@ public class ArticlesController : ControllerBase
     [HttpGet("{slug}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Articles>> GetArticle(string slug)
+    public async Task<ActionResult<ArticleToReturnDto>> GetArticle(string slug)
     {
         var article = await _articleRepository.GetArticleBySlug(slug);
         if (article == null) return NotFound();
@@ -96,7 +97,7 @@ public class ArticlesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<Articles>> CreateArticle(ArticleForCreation createdArticle)
+    public async Task<ActionResult<ArticleToReturnDto>> CreateArticle(ArticleForCreation createdArticle)
     {
         var username = _identity.GetLoggedUser(HttpContext.User.Identity);
         if (username == null) return Unauthorized();
@@ -109,6 +110,28 @@ public class ArticlesController : ControllerBase
         var articleToReturn = await PrepareArticle(articleEntity);
         return Ok(articleToReturn);
     }
+
+    [HttpPut("{slug}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<ArticleToReturnDto>> UpdateArticle(string slug, ArticleForUpdatingDto updatedArticle)
+    {
+        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return Unauthorized();
+        var user = await _identity.IsExisted(username);
+        if (!user) return NotFound();
+        var article = await _articleRepository.GetArticle(slug);
+        if (article == null) return NotFound();
+        if (article.Username != username) return BadRequest();
+        if (!TryValidateModel(updatedArticle)) return ValidationProblem(ModelState);
+        _mapper.Map(updatedArticle, article);
+        await _articleRepository.UpdateArticle(article);
+        await _articleRepository.Save();
+        var articleToReturn = await PrepareArticle(article);
+        return Ok(articleToReturn);
+    }
+    
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
         Console.WriteLine($"{modelStateDictionary.ValidationState} {modelStateDictionary.IsValid}");
