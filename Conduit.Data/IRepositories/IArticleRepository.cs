@@ -11,6 +11,7 @@ public interface IArticleRepository
     public Task<int> Save();
     public Task CreateArticles(List<Articles> createdArticles);
     public Task<Articles?> GetArticle(int articleId);
+    public Task<Articles?> GetArticle(string slug);
     public Task<List<Articles>> GetAllArticles(IQueryable<Articles> articles,int offset, int limit);
     public Task<IEnumerable<Articles>> GetArticles(IQueryable<Articles> articles,
         ArticleResourceParameter articleResourceParameter);

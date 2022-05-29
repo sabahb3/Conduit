@@ -73,7 +73,12 @@ public class ArticleRepository : IArticleRepository
     {
         return await _context.Articles.FindAsync(articleId);
     }
-    
+
+    public async Task<Articles?> GetArticle(string slug)
+    {
+        return await _context.Articles.FirstOrDefaultAsync(a => a.Title == slug);
+    }
+
     public async Task<List<Articles>> GetAllArticles(IQueryable<Articles> articles, int offset, int limit)
     {
         return await articles.OrderByDescending(a=>a.Date).Skip(offset).Take(limit).ToListAsync();
@@ -83,6 +88,7 @@ public class ArticleRepository : IArticleRepository
     {
         var article = await _context.Articles.FindAsync(updatedArticle.Id);
         article?.AssignArticle(updatedArticle);
+        _context.Entry(article).State = EntityState.Modified;
         return article;
     }
 
