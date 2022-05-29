@@ -95,6 +95,7 @@ public class ArticlesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Articles>> CreateArticle(ArticleForCreation createdArticle)
     {
         var username = _identity.GetLoggedUser(HttpContext.User.Identity);

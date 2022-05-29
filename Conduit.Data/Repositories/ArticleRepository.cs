@@ -33,9 +33,30 @@ public class ArticleRepository : IArticleRepository
     public async Task CreateArticle(Articles createdArticle)
     {
         var user = _context.Users.Find(createdArticle.Username);
-        if (user != null)
-            await _context.Articles.AddAsync(createdArticle);
+        if (user == null) return;
+        createdArticle.Date=DateTime.Now;
+        createdArticle.UpdatingDate = createdArticle.Date;
+        createdArticle.ArticlesTags = await AddTags(createdArticle);
+        await _context.Articles.AddAsync(createdArticle);
     }
+
+    private async Task<List<ArticlesTags>> AddTags(Articles createdArticle)
+    {
+        var articleTags = new List<ArticlesTags>();
+        var tags = createdArticle.ArticlesTags.Select(t => t.Tag);
+        foreach (var tag in tags)
+        {
+            if (await _context.Tags.FirstOrDefaultAsync(t=>t.Tag==tag.Trim()) == null)
+            {
+                _context.Tags.Add(new Tags{Tag = tag});
+            }
+            articleTags.Add(new ArticlesTags
+            {
+                Tag = tag
+            });
+        }
+        return articleTags;
+    } 
 
     public async Task<int> Save()
     {
@@ -167,5 +188,4 @@ public class ArticleRepository : IArticleRepository
         var articleSlug = slug.Trim();
         return await _context.Articles.FirstOrDefaultAsync(s => s.Title == articleSlug);
     }
-
 }
