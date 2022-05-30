@@ -94,6 +94,7 @@ builder.Services.AddDbContext<ConduitDbContext>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
+builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient(typeof(UserIdentity));
 var app = builder.Build();
 
