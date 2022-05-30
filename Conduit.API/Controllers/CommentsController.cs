@@ -3,6 +3,7 @@ using Conduit.API.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using Conduit.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -51,12 +52,33 @@ public class CommentsController : ControllerBase
         var commentToReturn =await PrepareComment(commentEntity);
         return Ok(new {Comment=commentToReturn});
     }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<CommentToReturnDto>>> GetArticleComments(string slug)
+    {
+        var articleId = await _commentRepository.GetArticleId(slug);
+        if (articleId==null) return NotFound();
+        var comments = await _commentRepository.ReadArticleComments(slug);
+        var commentsToReturn = await PrepareComments(comments!);
+        return Ok(new { Comments = commentsToReturn });
+    }
+
     [NonAction]
-    public async Task<CommentToReturnDto> PrepareComment(Comments comment)
+    private async Task<CommentToReturnDto> PrepareComment(Comments comment)
     {
         var commentToReturn = _mapper.Map<CommentToReturnDto>(comment);
         commentToReturn.Author = await _userIdentity.PrepareProfile(HttpContext.User.Identity, comment.Username);
         return commentToReturn;
+    }
+    [NonAction]
+    private async Task<IEnumerable<CommentToReturnDto>> PrepareComments(IEnumerable<Comments> comments)
+    {
+        var commentsToReturn = new List<CommentToReturnDto>();
+        foreach (var comment in comments) commentsToReturn.Add(await PrepareComment(comment));
+        return commentsToReturn;
     }
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
