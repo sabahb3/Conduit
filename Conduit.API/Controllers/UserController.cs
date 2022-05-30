@@ -51,7 +51,7 @@ public class UserController : ControllerBase
     /// Partially update user
     /// </summary>
     /// <param name="patchDocument">The set of operations to apply on the user</param>
-    /// <returns> </returns>
+    /// <returns> updated user</returns>
     /// <remarks>
     /// Sample Request : This will update user username  
     ///```  
@@ -59,12 +59,16 @@ public class UserController : ControllerBase
     /// {  
     ///    "op": "replace",  
     ///    "path": "/username",  
-    ///    "value": "sab"  
+    ///    "value": "sabah.Baara"  
     /// }  
     /// ]  
     ///```  
     /// </remarks>>
-    [HttpPatch]
+    /// <response code="401">An unauthorized user tries updating their info</response>
+    /// <response code="404">When the token is valid but the user does not exist anymore</response>
+    /// <response code="422">When the updated user has an invalid state for its properties</response>
+
+        [HttpPatch]
     public async Task<IActionResult> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto>patchDocument)
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
