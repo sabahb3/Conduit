@@ -34,7 +34,7 @@ public class FavoriteArticlesController : ControllerBase
         if (article == null) return NotFound();
         await _articleRepository.FavoriteArticle(username, article.Id);
         await _articleRepository.Save();
-        var articleToReturn = await PrepareArticle(article);
+        var articleToReturn = await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
     [HttpDelete]
@@ -50,26 +50,8 @@ public class FavoriteArticlesController : ControllerBase
         if (article == null) return NotFound();
         await _articleRepository.UnfavoriteArticle(username, article.Id);
         await _articleRepository.Save();
-        var articleToReturn = await PrepareArticle(article);
+        var articleToReturn =
+            await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
-    }
-    [NonAction]
-    public async Task<ArticleToReturnDto> PrepareArticle(Articles article)
-    {
-        var articleToReturn = _mapper.Map<ArticleToReturnDto>(article);
-        articleToReturn.TagList = (await _articleRepository.GetTags(article.Id) as List<string>)!;
-        articleToReturn.FavoritesCount = await _articleRepository.CountWhoFavoriteArticle(article.Id);
-        var user = await _articleRepository.GetAuthor(article.Id);
-        articleToReturn.Author = (await _identity.PrepareProfile(HttpContext.User.Identity,user!.Username))!;
-        articleToReturn.Favorited = await IsFavorited(article.Id);
-        return articleToReturn;
-    }
-
-    [NonAction]
-    public async Task<bool> IsFavorited(int articleId)
-    {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
-        if (username == null) return false;
-        return await _articleRepository.DoesFavoriteArticle(username!, articleId);
     }
 }
