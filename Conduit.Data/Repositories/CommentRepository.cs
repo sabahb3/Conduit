@@ -103,4 +103,9 @@ public class CommentRepository :ICommentRepository
         return article.Id;
     }
 
+    public async Task<bool> DoesArticleHasComment(int articleId, int commentId)
+    {
+        return await _context.Comments.AnyAsync(a => a.Id == commentId && a.ArticlesId == articleId);
+    }
+
 }
