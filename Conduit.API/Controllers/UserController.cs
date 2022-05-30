@@ -1,6 +1,5 @@
 using AutoMapper;
 using Conduit.API.Helper;
-using Conduit.API.Validators;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -27,7 +26,14 @@ public class UserController : ControllerBase
         _mapper = mapper;
         _userIdentity = userIdentity;
     }
-    
+    /// <summary>
+    /// Get current user
+    /// </summary>
+    /// <returns>Return current user which consists of a username, email, bio, image, and token</returns>
+    /// <response code="200">When the token is valid it returns a user</response>
+    /// <response code="401">When the token is invalid or there is no token</response>
+    /// <response code="404">When the token is valid but the user does not exist anymore</response>
+
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCurrentUser()
