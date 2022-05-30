@@ -1,18 +1,18 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\MSI\AppData\Local\JetBrains\Rider2022.1\resharper-host\temp\Rider\vAny\CoverageData\_Conduit.-541761767\Snapshot\snapshot.utdcvr</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=18d3e66c_002Da464_002D42f5_002D94b5_002D5a710cf3b896/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldReturn200WhenSignup" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.APIs.AuthenticationTest.ShouldReturn200WhenSignup&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fdfc3102_002D32a4_002D4023_002Db710_002D2f81df900887/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;And&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.APIs.AuthenticationTest&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+    &lt;Project Location="C:\Users\MSI\Desktop\Foothill\Conduit\Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
+    &lt;Namespace&gt;Tests.APIs&lt;/Namespace&gt;&#xD;
+  &lt;/And&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bbfe9832_002Dfbaf_002D4616_002D8112_002Df5b33b047380/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldReturn200WhenSignup #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::B8B30799-3F7D-4ABF-89EE-0BDBE92C7C8F::net6.0::Tests.APIs.AuthenticationTest.ShouldReturn200WhenSignup&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d8243587_002D85e2_002D42b9_002D9a2a_002De334da0b971b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Solution /&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
+	
+	
+	
+	
 	
 	
 	

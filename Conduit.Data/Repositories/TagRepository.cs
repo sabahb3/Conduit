@@ -1,9 +1,10 @@
+using Conduit.Data.IRepositories;
 using Conduit.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Data.Repositories;
 
-public class TagRepository
+public class TagRepository : ITagRepository
 {
     private readonly ConduitDbContext _context;
 
@@ -15,21 +16,10 @@ public class TagRepository
     public async Task<IEnumerable<string>> GetTags(int articleId)
     {
         var article = await _context.Articles.FindAsync(articleId);
-        if (article != null)
-        {
-            await _context.Entry(article).Collection(a => a.ArticlesTags).LoadAsync();
-            var articleTags= await _context.Articles.Select(a => a.ArticlesTags).FirstOrDefaultAsync();
-            if (articleTags != null)
-            {
-                foreach (var tags in articleTags)
-                {
-                    await _context.Entry(tags).Reference(t => t.Tags).LoadAsync();
-                }
-
-                return articleTags.Select(a => a.Tag).OrderBy(a => a).ToList();
-            }
-        }
-        return new List<string>();
+        if (article == null) return new List<string>();
+        _context.Entry(article).State = EntityState.Unchanged;
+        await _context.Entry(article).Collection(a => a.ArticlesTags).LoadAsync();
+        return article.ArticlesTags.Select(a => a.Tag).OrderBy(a=>a).ToList();
     }
 
     public async Task<int> Save()
@@ -42,7 +32,6 @@ public class TagRepository
         var article = await _context.Articles.FindAsync(articleId);
         if (article!=null)
         {
-
             article.ArticlesTags = await SetUpTags(tags);
         }
     }

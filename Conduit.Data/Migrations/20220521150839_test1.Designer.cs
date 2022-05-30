@@ -4,6 +4,7 @@ using Conduit.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Conduit.Data.Migrations
 {
     [DbContext(typeof(ConduitDbContext))]
-    partial class ConduitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220521150839_test1")]
+    partial class test1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,9 +47,6 @@ namespace Conduit.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatingDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -66,7 +65,6 @@ namespace Conduit.Data.Migrations
                             Date = new DateTime(2022, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "How to say hello",
                             Title = "Hello, and welcome",
-                            UpdatingDate = new DateTime(2022, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Username = "Hala"
                         },
                         new
@@ -76,7 +74,6 @@ namespace Conduit.Data.Migrations
                             Date = new DateTime(2022, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "What do people really mean when they ask “How are you?",
                             Title = "How are you",
-                            UpdatingDate = new DateTime(2022, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Username = "Hala"
                         },
                         new
@@ -86,7 +83,6 @@ namespace Conduit.Data.Migrations
                             Date = new DateTime(2022, 2, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Want to be polite? Be a mirror.",
                             Title = "Be polite",
-                            UpdatingDate = new DateTime(2022, 2, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Username = "Sabah"
                         });
                 });
