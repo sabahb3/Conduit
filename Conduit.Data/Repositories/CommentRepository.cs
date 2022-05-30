@@ -44,6 +44,13 @@ public class CommentRepository :ICommentRepository
         return await _context.Comments.Where(c => c.ArticlesId == articleId).ToListAsync();
     }
 
+    public async Task<List<Comments>?> ReadArticleComments(string slug)
+    {
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.Title == slug.Trim());
+        if (article == null) return null;
+        return await _context.Comments.Where(c => c.ArticlesId == article.Id).OrderByDescending(c=>c.Date).ToListAsync();
+    }
+
     public async Task<List<Comments>> ReadUserComments(string username)
     {
         return await _context.Comments.Where(c => c.Username == username).ToListAsync();

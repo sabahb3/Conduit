@@ -9,6 +9,7 @@ public interface ICommentRepository
     public Task<int> Save();
     public Task CreateComments(List<Comments> createdComments);
     public Task<List<Comments>> ReadArticleComments(int articleId);
+    public Task<List<Comments>?> ReadArticleComments(string slug);
     public Task<List<Comments>> ReadUserComments(string username);
     public Task<Comments?> GetComment(int commentId);
     public Task<List<Comments>> GetComments();
