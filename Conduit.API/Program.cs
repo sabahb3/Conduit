@@ -85,6 +85,7 @@ builder.Services.AddControllers(option=>
 {
     options.RegisterValidatorsFromAssemblyContaining(typeof(UserEditingValidator));
     options.RegisterValidatorsFromAssemblyContaining(typeof(ArticleCreatingValidator));
+    options.RegisterValidatorsFromAssemblyContaining(typeof(CommentCreationValidator));
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
