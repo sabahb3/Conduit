@@ -22,6 +22,12 @@ public class TagRepository : ITagRepository
         return article.ArticlesTags.Select(a => a.Tag).OrderBy(a=>a).ToList();
     }
 
+    public async Task<List<string>> GetTags()
+    {
+        return await _context.Set<Tags>().Select(t => t.Tag).ToListAsync();
+    }
+
+
     public async Task<int> Save()
     {
         return await _context.SaveChangesAsync();
