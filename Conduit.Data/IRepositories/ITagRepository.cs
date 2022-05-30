@@ -9,4 +9,5 @@ public interface ITagRepository
     public Task AddTags(int articleId, List<Tags> tags);
     public Task<List<string>> GetPopularTag();
 
+    public Task<List<string>> GetTags();
 }
