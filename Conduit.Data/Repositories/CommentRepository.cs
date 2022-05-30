@@ -22,6 +22,7 @@ public class CommentRepository :ICommentRepository
     {
         var user = await _context.Users.FindAsync(createdComment.Username);
         var article = await _context.Articles.FindAsync(createdComment.ArticlesId);
+        createdComment.Date= DateTime.Now;
         if (user != null && article != null) 
             await _context.Comments.AddAsync(createdComment);
     }
@@ -41,6 +42,13 @@ public class CommentRepository :ICommentRepository
     public async Task<List<Comments>> ReadArticleComments(int articleId)
     {
         return await _context.Comments.Where(c => c.ArticlesId == articleId).ToListAsync();
+    }
+
+    public async Task<List<Comments>?> ReadArticleComments(string slug)
+    {
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.Title == slug.Trim());
+        if (article == null) return null;
+        return await _context.Comments.Where(c => c.ArticlesId == article.Id).OrderByDescending(c=>c.Date).ToListAsync();
     }
 
     public async Task<List<Comments>> ReadUserComments(string username)
@@ -87,4 +95,17 @@ public class CommentRepository :ICommentRepository
             await DeleteComment(comment.Id);
         }
     }
+
+    public async Task<int?> GetArticleId(string slug)
+    {
+        var article =await _context.Articles.FirstOrDefaultAsync(a => a.Title == slug.Trim());
+        if (article == null) return null;
+        return article.Id;
+    }
+
+    public async Task<bool> DoesArticleHasComment(int articleId, int commentId)
+    {
+        return await _context.Comments.AnyAsync(a => a.Id == commentId && a.ArticlesId == articleId);
+    }
+
 }
