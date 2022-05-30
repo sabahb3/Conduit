@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Conduit.API.Helper;
 using Conduit.API.Validators;
@@ -90,7 +91,14 @@ builder.Services.AddControllers(option=>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(
+    setupAction =>
+    {
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory,xmlFile);
+        setupAction.IncludeXmlComments(xmlPath);
+    }
+    );
 builder.Services.AddDbContext<ConduitDbContext>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
@@ -105,7 +113,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
 }
 app.UseSwaggerUI();
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
