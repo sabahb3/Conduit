@@ -22,6 +22,7 @@ public class CommentRepository :ICommentRepository
     {
         var user = await _context.Users.FindAsync(createdComment.Username);
         var article = await _context.Articles.FindAsync(createdComment.ArticlesId);
+        createdComment.Date= DateTime.Now;
         if (user != null && article != null) 
             await _context.Comments.AddAsync(createdComment);
     }
@@ -87,4 +88,12 @@ public class CommentRepository :ICommentRepository
             await DeleteComment(comment.Id);
         }
     }
+
+    public async Task<int?> GetArticleId(string slug)
+    {
+        var article =await _context.Articles.FirstOrDefaultAsync(a => a.Title == slug.Trim());
+        if (article == null) return null;
+        return article.Id;
+    }
+
 }

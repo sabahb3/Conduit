@@ -15,4 +15,5 @@ public interface ICommentRepository
     public Task DeleteComment(int commentId);
     public Task DeleteComments();
     public Task DeleteArticleComments(int articleId);
+    public Task<int?> GetArticleId(string slug);
 }
