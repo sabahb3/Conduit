@@ -30,10 +30,12 @@ public class AuthenticationController : ControllerBase
     /// Login to Conduit
     /// </summary>
     /// <param name="loginCredentials">Provide user's email and password</param>
-    /// <returns></returns>
+    /// <returns>JWT</returns>
     /// <response code="200">Returns generated token when the user exists</response>
-   
+    /// <response code="404">When a user's email does not exist or the password is wrong</response>
+
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginCredentials loginCredentials)
@@ -46,6 +48,30 @@ public class AuthenticationController : ControllerBase
         }
         return NotFound("User not found");
     }
+
+    /// <summary>
+    /// Register new user.
+    /// </summary>
+    /// <param name="RegistrationCredentials">Provide user's email, username and password</param>
+    /// <returns>JWT</returns>
+    /// <response code="200">Returns generated token when the user created</response>
+    /// <response code="400">When the entered email or username exists</response>
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Register(RegistrationCredentials registrationCredentials)
+    {
+        var user = _mapper.Map<Users>(registrationCredentials);
+        var creatingUser = await _userRepository.CreateUser(user);
+        if (creatingUser.isValid)
+        {
+            var token = GenerateToken(user);
+            await _userRepository.Save();
+            return Ok(token);
+        }
+        return BadRequest(creatingUser.message);
+    }
+    
+    [NonAction]
     private string GenerateToken(Users user)
     {
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -63,20 +89,5 @@ public class AuthenticationController : ControllerBase
             signingCredentials:credential
         );
         return new JwtSecurityTokenHandler().WriteToken(token); 
-    }
-
-    [AllowAnonymous]
-    [HttpPost]
-    public async Task<IActionResult> Register(RegistrationCredentials registrationCredentials)
-    {
-        var user = _mapper.Map<Users>(registrationCredentials);
-        var creatingUser = await _userRepository.CreateUser(user);
-        if (creatingUser.isValid)
-        {
-            var token = GenerateToken(user);
-            var save = await _userRepository.Save();
-            return Ok(token);
-        }
-        return NotFound(creatingUser.message);
     }
 }
