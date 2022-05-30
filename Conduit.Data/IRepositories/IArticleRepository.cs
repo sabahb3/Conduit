@@ -27,4 +27,5 @@ public interface IArticleRepository
     public Task RemoveArticle(string slug, string username);
     public Task FavoriteArticle(string username, int articleId);
     public Task<IEnumerable<string>> GetTags(int articleId);
+    public Task UnfavoriteArticle(string username, int articleId);
 }

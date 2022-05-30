@@ -232,4 +232,17 @@ public class ArticleRepository : IArticleRepository
         await _context.Entry(article).Collection(a => a.ArticlesTags).LoadAsync();
         return article.ArticlesTags.Select(a => a.Tag).OrderBy(a=>a).ToList();
     }
+
+    public async Task UnfavoriteArticle(string username, int articleId)
+    {
+        var user = await _context.Users.FindAsync(username);
+        if(user==null) return;
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article == null) return;
+        var favoriteArticle = await _context.Set<UsersFavoriteArticles>()
+            .FirstOrDefaultAsync(a => a.Username == username && a.ArticleId == articleId);
+        if (favoriteArticle==null) return;
+        _context.Entry(favoriteArticle).State = EntityState.Deleted;
+        article.UsersFavoriteArticles.Add(favoriteArticle);
+    }
 }
