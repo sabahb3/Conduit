@@ -224,4 +224,12 @@ public class ArticleRepository : IArticleRepository
         var articleSlug = slug.Trim();
         return await _context.Articles.FirstOrDefaultAsync(s => s.Title == articleSlug);
     }
+    public async Task<IEnumerable<string>> GetTags(int articleId)
+    {
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article == null) return new List<string>();
+        _context.Entry(article).State = EntityState.Unchanged;
+        await _context.Entry(article).Collection(a => a.ArticlesTags).LoadAsync();
+        return article.ArticlesTags.Select(a => a.Tag).OrderBy(a=>a).ToList();
+    }
 }
