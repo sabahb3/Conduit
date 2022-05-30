@@ -25,4 +25,7 @@ public interface IArticleRepository
     public Task<IEnumerable<Articles>> GetFeedArticles(ArticleResourceParameter? articleResourceParameter, string username);
     public Task<Articles?> GetArticleBySlug(string slug);
     public Task RemoveArticle(string slug, string username);
+    public Task FavoriteArticle(string username, int articleId);
+    public Task<IEnumerable<string>> GetTags(int articleId);
+    public Task UnfavoriteArticle(string username, int articleId);
 }

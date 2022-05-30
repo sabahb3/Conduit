@@ -126,6 +126,24 @@ public class ArticleRepository : IArticleRepository
         }
     }
 
+    public async Task FavoriteArticle(string username, int articleId)
+    {
+        var user = await _context.Users.FindAsync(username);
+        if(user==null) return;
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article == null) return;
+        var isFavorite = await _context.Set<UsersFavoriteArticles>()
+            .AnyAsync(a => a.Username == username && a.ArticleId == articleId);
+        if (isFavorite) return;
+        var favoriteArticle = new UsersFavoriteArticles
+        {
+            Username = username,
+            ArticleId = articleId
+        };
+        _context.Entry(favoriteArticle).State = EntityState.Added;
+        article.UsersFavoriteArticles.Add(favoriteArticle);
+    }
+
     public async Task RemoveArticles()
     {
         foreach (var article in _context.Articles)
@@ -205,5 +223,26 @@ public class ArticleRepository : IArticleRepository
     {
         var articleSlug = slug.Trim();
         return await _context.Articles.FirstOrDefaultAsync(s => s.Title == articleSlug);
+    }
+    public async Task<IEnumerable<string>> GetTags(int articleId)
+    {
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article == null) return new List<string>();
+        _context.Entry(article).State = EntityState.Unchanged;
+        await _context.Entry(article).Collection(a => a.ArticlesTags).LoadAsync();
+        return article.ArticlesTags.Select(a => a.Tag).OrderBy(a=>a).ToList();
+    }
+
+    public async Task UnfavoriteArticle(string username, int articleId)
+    {
+        var user = await _context.Users.FindAsync(username);
+        if(user==null) return;
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article == null) return;
+        var favoriteArticle = await _context.Set<UsersFavoriteArticles>()
+            .FirstOrDefaultAsync(a => a.Username == username && a.ArticleId == articleId);
+        if (favoriteArticle==null) return;
+        _context.Entry(favoriteArticle).State = EntityState.Deleted;
+        article.UsersFavoriteArticles.Add(favoriteArticle);
     }
 }

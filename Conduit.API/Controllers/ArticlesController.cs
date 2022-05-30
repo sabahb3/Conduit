@@ -21,15 +21,12 @@ public class ArticlesController : ControllerBase
 {
     private readonly IArticleRepository _articleRepository;
     private readonly IMapper _mapper;
-    private readonly ITagRepository _tagRepository;
     private readonly UserIdentity _identity;
 
-    public ArticlesController(IArticleRepository articleRepository, IMapper mapper, ITagRepository tagRepository,
-        UserIdentity identity)
+    public ArticlesController(IArticleRepository articleRepository, IMapper mapper, UserIdentity identity)
     {
         _articleRepository = articleRepository;
         _mapper = mapper;
-        _tagRepository = tagRepository;
         _identity = identity;
     }
 
@@ -46,29 +43,11 @@ public class ArticlesController : ControllerBase
     public async Task<IEnumerable<ArticleToReturnDto>> PrepareArticles(IEnumerable<Articles> articles)
     {
         var articlesToReturn = new List<ArticleToReturnDto>();
-        foreach (var article in articles) articlesToReturn.Add(await PrepareArticle(article));
+        foreach (var article in articles) 
+            articlesToReturn.Add(await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity));
         return articlesToReturn;
     }
 
-    [NonAction]
-    public async Task<ArticleToReturnDto> PrepareArticle(Articles article)
-    {
-        var articleToReturn = _mapper.Map<ArticleToReturnDto>(article);
-        articleToReturn.TagList = await _tagRepository.GetTags(article.Id) as List<string>;
-        articleToReturn.FavoritesCount = await _articleRepository.CountWhoFavoriteArticle(article.Id);
-        var user = await _articleRepository.GetAuthor(article.Id);
-        articleToReturn.Author = await _identity.PrepareProfile(HttpContext.User.Identity,user!.Username);
-        articleToReturn.Favorited = await IsFavorited(article.Id);
-        return articleToReturn;
-    }
-
-    [NonAction]
-    public async Task<bool> IsFavorited(int articleId)
-    {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
-        if (username == null) return false;
-        return await _articleRepository.DoesFavoriteArticle(username!, articleId);
-    }
 
     [HttpGet("feed")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -91,7 +70,8 @@ public class ArticlesController : ControllerBase
     {
         var article = await _articleRepository.GetArticleBySlug(slug);
         if (article == null) return NotFound();
-        return Ok(new { article = await PrepareArticle(article) });
+        var articleToReturn = await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
+        return Ok(new { article = articleToReturn });
     }
 
     [HttpPost]
@@ -108,7 +88,7 @@ public class ArticlesController : ControllerBase
         articleEntity.Username = username;
         await _articleRepository.CreateArticle(articleEntity);
         await _articleRepository.Save();
-        var articleToReturn = await PrepareArticle(articleEntity);
+        var articleToReturn =await articleEntity.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
 
@@ -129,7 +109,7 @@ public class ArticlesController : ControllerBase
         _mapper.Map(updatedArticle, article);
         await _articleRepository.UpdateArticle(article);
         await _articleRepository.Save();
-        var articleToReturn = await PrepareArticle(article);
+        var articleToReturn =await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
 
@@ -156,7 +136,7 @@ public class ArticlesController : ControllerBase
         _mapper.Map(articleToUpdate, article);
         await _articleRepository.UpdateArticle(article);
         await _articleRepository.Save();
-        var articleToReturn = await PrepareArticle(article);
+        var articleToReturn =await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
 
