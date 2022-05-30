@@ -98,9 +98,18 @@ public class UserController : ControllerBase
         userDto.Token = token!;
         return Ok(userDto);
     }
-
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    
+    /// <summary>
+    ///  Update a users
+    /// </summary>
+    /// <param name="userForUpdatingDto">User model for updating</param>
+    /// <returns>Updated user</returns>
+    /// <response code="401">An unauthorized user tries updating their info</response>
+    /// <response code="404">When the token is valid but the user does not exist anymore</response>
+    /// <response code="422">When the updated user has an invalid state for its properties</response>
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser([FromBody] UserForUpdatingDto userForUpdatingDto)
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
