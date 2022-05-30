@@ -160,6 +160,21 @@ public class ArticlesController : ControllerBase
         return Ok(articleToReturn);
     }
 
+    [HttpDelete("{slug}")]
+    public async Task<ActionResult> DeleteArticle(string slug)
+    {
+        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return Unauthorized();
+        var user = await _identity.IsExisted(username);
+        if (!user) return NotFound();
+        var article = await _articleRepository.GetArticle(slug);
+        if (article == null) return NotFound();
+        if (article.Username != username) return BadRequest();
+        await _articleRepository.RemoveArticle(slug,username);
+        await _articleRepository.Save();
+        return NoContent();
+    }
+
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
         Console.WriteLine($"{modelStateDictionary.ValidationState} {modelStateDictionary.IsValid}");
