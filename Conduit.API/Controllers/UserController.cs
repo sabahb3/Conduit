@@ -46,7 +46,7 @@ public class UserController : ControllerBase
         var userToReturn = _mapper.Map<UserForReturningDto>(user!);
         var token = await HttpContext.GetTokenAsync("access_token");
         userToReturn.Token = token!;
-        return Ok(userToReturn);
+        return Ok(new{user=userToReturn});
     }
 
     /// <summary>
@@ -91,12 +91,12 @@ public class UserController : ControllerBase
             var unUpdatedUser = await _userRepository.GetUser(userName!);
             var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
             unUpdatedDto.Token = token!;
-            return Ok(unUpdatedDto);
+            return Ok(new {user=unUpdatedDto});
         }
 
         var userDto = _mapper.Map<UserForReturningDto>(user);
         userDto.Token = token!;
-        return Ok(userDto);
+        return Ok(new {user=userDto});
     }
     
     /// <summary>
@@ -126,12 +126,12 @@ public class UserController : ControllerBase
             var unUpdatedUser = await _userRepository.GetUser(userName!);
             var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
             unUpdatedDto.Token = token!;
-            return Ok(unUpdatedDto);
+            return Ok(new {user=unUpdatedDto});
         }
 
         var userDto = _mapper.Map<UserForReturningDto>(user);
         userDto.Token = token!;
-        return Ok(userDto);
+        return Ok(new {user=userDto});
     }
 
     public override ActionResult ValidationProblem([ActionResultObjectValue] ModelStateDictionary modelStateDictionary)
