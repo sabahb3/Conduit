@@ -66,6 +66,28 @@ public class CommentsController : ControllerBase
         return Ok(new { Comments = commentsToReturn });
     }
 
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> RemoveComment(string slug,int id)
+    {
+        var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return Unauthorized();
+        var isExist = await _userIdentity.IsExisted(username);
+        if (!isExist) return NotFound();
+        var article = await _commentRepository.GetArticleId(slug);
+        if (article == null) return NotFound();
+        var comment = await _commentRepository.GetComment(id);
+        if (comment == null) return NotFound();
+        if (comment.Username != username) return BadRequest();
+        var validComment = await _commentRepository.DoesArticleHasComment(article.Value, id);
+        if (!validComment) return NotFound();
+        await _commentRepository.DeleteComment(id);
+        await _commentRepository.Save();
+        return NoContent();
+    }
+
     [NonAction]
     private async Task<CommentToReturnDto> PrepareComment(Comments comment)
     {
