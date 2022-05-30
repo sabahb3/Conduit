@@ -37,6 +37,22 @@ public class FavoriteArticlesController : ControllerBase
         var articleToReturn = await PrepareArticle(article);
         return Ok(articleToReturn);
     }
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ArticleToReturnDto>> UnfavoriteArticle(string slug)
+    {
+        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return Unauthorized();
+        var isExist = await _identity.IsExisted(username);
+        if (!isExist) return NotFound();
+        var article=await _articleRepository.GetArticle(slug);
+        if (article == null) return NotFound();
+        await _articleRepository.UnfavoriteArticle(username, article.Id);
+        await _articleRepository.Save();
+        var articleToReturn = await PrepareArticle(article);
+        return Ok(articleToReturn);
+    }
     [NonAction]
     public async Task<ArticleToReturnDto> PrepareArticle(Articles article)
     {
