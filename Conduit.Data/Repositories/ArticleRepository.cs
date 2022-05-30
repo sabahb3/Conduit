@@ -126,6 +126,24 @@ public class ArticleRepository : IArticleRepository
         }
     }
 
+    public async Task FavoriteArticle(string username, int articleId)
+    {
+        var user = await _context.Users.FindAsync(username);
+        if(user==null) return;
+        var article = await _context.Articles.FindAsync(articleId);
+        if (article == null) return;
+        var isFavorite = await _context.Set<UsersFavoriteArticles>()
+            .AnyAsync(a => a.Username == username && a.ArticleId == articleId);
+        if (isFavorite) return;
+        var favoriteArticle = new UsersFavoriteArticles
+        {
+            Username = username,
+            ArticleId = articleId
+        };
+        _context.Entry(favoriteArticle).State = EntityState.Added;
+        article.UsersFavoriteArticles.Add(favoriteArticle);
+    }
+
     public async Task RemoveArticles()
     {
         foreach (var article in _context.Articles)
