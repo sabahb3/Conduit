@@ -24,4 +24,5 @@ public interface IArticleRepository
     public Task<bool> DoesFavoriteArticle(string username, int articleId);
     public Task<IEnumerable<Articles>> GetFeedArticles(ArticleResourceParameter? articleResourceParameter, string username);
     public Task<Articles?> GetArticleBySlug(string slug);
+    public Task RemoveArticle(string slug, string username);
 }

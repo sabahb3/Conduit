@@ -113,6 +113,18 @@ public class ArticleRepository : IArticleRepository
             _context.Entry(article).State = EntityState.Deleted;
         }
     }
+    public async Task RemoveArticle(string slug, string username)
+    {
+        var article = await _context.Articles.FirstOrDefaultAsync(a=>a.Title==slug.Trim()&& a.Username==username.Trim());
+        if (article != null)
+        {
+            using (var deleteContext = new ConduitDbContext(_context.ConduitOptions.Options))
+            {
+                deleteContext.Articles.Remove(article);
+            }
+            _context.Entry(article).State = EntityState.Deleted;
+        }
+    }
 
     public async Task RemoveArticles()
     {
