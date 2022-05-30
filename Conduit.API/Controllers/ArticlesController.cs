@@ -6,6 +6,7 @@ using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using Conduit.Domain;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -131,7 +132,34 @@ public class ArticlesController : ControllerBase
         var articleToReturn = await PrepareArticle(article);
         return Ok(articleToReturn);
     }
-    
+
+    [HttpPatch("{slug}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<ArticleToReturnDto>> PartialUpdate(string slug,
+        JsonPatchDocument<ArticleForUpdatingDto> patchDocument)
+    {
+        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        if (username == null) return Unauthorized();
+        var user = await _identity.IsExisted(username);
+        if (!user) return NotFound();
+        var article = await _articleRepository.GetArticle(slug);
+        if (article == null) return NotFound();
+        if (article.Username != username) return BadRequest();
+        var articleToUpdate = _mapper.Map<ArticleForUpdatingDto>(article);
+        patchDocument.ApplyTo(articleToUpdate);
+        if (!TryValidateModel((articleToUpdate)))
+        {
+            return ValidationProblem(ModelState);
+        }
+        _mapper.Map(articleToUpdate, article);
+        await _articleRepository.UpdateArticle(article);
+        await _articleRepository.Save();
+        var articleToReturn = await PrepareArticle(article);
+        return Ok(articleToReturn);
+    }
+
     public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
     {
         Console.WriteLine($"{modelStateDictionary.ValidationState} {modelStateDictionary.IsValid}");
