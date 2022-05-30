@@ -16,26 +16,27 @@ namespace Conduit.API.Controllers;
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 public class UserController : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly UserIdentity _userIdentity;
+    private readonly IUserRepository _userRepository;
 
-    public UserController(IUserRepository userRepository,IMapper mapper,UserIdentity userIdentity)
+    public UserController(IUserRepository userRepository, IMapper mapper, UserIdentity userIdentity)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _userIdentity = userIdentity;
     }
+
     /// <summary>
-    /// Get current user
+    ///     Get current user
     /// </summary>
     /// <returns>Return current user which consists of a username, email, bio, image, and token</returns>
     /// <response code="200">When the token is valid it returns a user</response>
     /// <response code="401">When the token is invalid or there is no token</response>
     /// <response code="404">When the token is valid but the user does not exist anymore</response>
-
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCurrentUser()
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
@@ -47,29 +48,32 @@ public class UserController : ControllerBase
         userToReturn.Token = token!;
         return Ok(userToReturn);
     }
-        /// <summary>
-    /// Partially update user
+
+    /// <summary>
+    ///     Partially update user
     /// </summary>
     /// <param name="patchDocument">The set of operations to apply on the user</param>
     /// <returns> updated user</returns>
     /// <remarks>
-    /// Sample Request : This will update user username  
-    ///```  
-    /// [  
-    /// {  
-    ///    "op": "replace",  
-    ///    "path": "/username",  
-    ///    "value": "sabah.Baara"  
-    /// }  
-    /// ]  
-    ///```  
-    /// </remarks>>
+    ///     Sample Request : This will update user username
+    ///     ```
+    ///     [
+    ///     {
+    ///     "op": "replace",
+    ///     "path": "/username",
+    ///     "value": "sabah.Baara"
+    ///     }
+    ///     ]
+    ///     ```
+    /// </remarks>
+    /// >
     /// <response code="401">An unauthorized user tries updating their info</response>
     /// <response code="404">When the token is valid but the user does not exist anymore</response>
     /// <response code="422">When the updated user has an invalid state for its properties</response>
-
-        [HttpPatch]
-    public async Task<IActionResult> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto>patchDocument)
+    [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto> patchDocument)
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (userName == null) return Unauthorized();
@@ -77,53 +81,54 @@ public class UserController : ControllerBase
         if (user == null) return NotFound();
         var userToUpdate = _mapper.Map<UserForUpdatingDto>(user);
         patchDocument.ApplyTo(userToUpdate);
-        if (!TryValidateModel((userToUpdate)))
-        {
-            return ValidationProblem(ModelState);
-        }
+        if (!TryValidateModel(userToUpdate)) return ValidationProblem(ModelState);
         _mapper.Map(userToUpdate, user);
-        await _userRepository.UpdateUser(user,userName!);
-        var affected= await _userRepository.Save();
+        await _userRepository.UpdateUser(user, userName!);
+        var affected = await _userRepository.Save();
         var token = await HttpContext.GetTokenAsync("access_token");
         if (affected == 0)
         {
-            var unUpdatedUser =await _userRepository.GetUser(userName!);
+            var unUpdatedUser = await _userRepository.GetUser(userName!);
             var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
             unUpdatedDto.Token = token!;
-            return Ok( unUpdatedDto);
+            return Ok(unUpdatedDto);
         }
+
         var userDto = _mapper.Map<UserForReturningDto>(user);
         userDto.Token = token!;
         return Ok(userDto);
     }
+
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody]UserForUpdatingDto userForUpdatingDto)
+    public async Task<IActionResult> UpdateUser([FromBody] UserForUpdatingDto userForUpdatingDto)
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (userName == null) return Unauthorized();
-        if(!TryValidateModel(userForUpdatingDto)) return ValidationProblem(ModelState);
+        if (!TryValidateModel(userForUpdatingDto)) return ValidationProblem(ModelState);
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
         _mapper.Map(userForUpdatingDto, user);
-        await _userRepository.UpdateUser(user,userName!);
-       var affected= await _userRepository.Save();
-       var token = await HttpContext.GetTokenAsync("access_token");
-       if (affected == 0)
-       {
-           var unUpdatedUser =await _userRepository.GetUser(userName!);
-           var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
-           unUpdatedDto.Token = token!;
-           return Ok( unUpdatedDto);
-       }
-       var userDto = _mapper.Map<UserForReturningDto>(user);
-       userDto.Token = token!;
-       return Ok(userDto);
+        await _userRepository.UpdateUser(user, userName!);
+        var affected = await _userRepository.Save();
+        var token = await HttpContext.GetTokenAsync("access_token");
+        if (affected == 0)
+        {
+            var unUpdatedUser = await _userRepository.GetUser(userName!);
+            var unUpdatedDto = _mapper.Map<UserForReturningDto>(unUpdatedUser);
+            unUpdatedDto.Token = token!;
+            return Ok(unUpdatedDto);
+        }
+
+        var userDto = _mapper.Map<UserForReturningDto>(user);
+        userDto.Token = token!;
+        return Ok(userDto);
     }
-    public override ActionResult ValidationProblem([ActionResultObjectValue]ModelStateDictionary modelStateDictionary)
+
+    public override ActionResult ValidationProblem([ActionResultObjectValue] ModelStateDictionary modelStateDictionary)
     {
         Console.WriteLine($"{modelStateDictionary.ValidationState} {modelStateDictionary.IsValid}");
         var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
-        return (ActionResult) options.Value.InvalidModelStateResponseFactory(ControllerContext);
+        return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
     }
 }
