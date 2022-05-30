@@ -26,5 +26,6 @@ public class ArticleProfile : Profile
                 opt.MapFrom<ArticleTagsResolver>()
             );
         CreateMap<ArticleForUpdatingDto,Articles>();
+        CreateMap<Articles, ArticleForUpdatingDto>();
     }
 }
