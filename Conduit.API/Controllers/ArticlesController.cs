@@ -75,6 +75,13 @@ public class ArticlesController : ControllerBase
         return Ok(new {articles =articlesToReturn,articlesCount= articlesToReturn.Count()});
     }
 
+    /// <summary>
+    /// Get an article based on its slug
+    /// </summary>
+    /// <param name="slug">article's slug</param>
+    /// <returns>An article</returns>
+    /// <response code="404">When there is no article with this title</response>
+    /// <response code="200">Get asked article</response>
     [AllowAnonymous]
     [HttpGet("{slug}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
