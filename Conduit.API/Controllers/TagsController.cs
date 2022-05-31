@@ -14,8 +14,13 @@ public class TagsController : ControllerBase
     {
         _tagRepository = tagRepository;
     }
+    /// <summary>
+    /// Get all tags
+    /// </summary>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<string>>> GetTags()
     {
         var tags =await _tagRepository.GetTags();
