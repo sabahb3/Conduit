@@ -25,13 +25,22 @@ public class CommentsController : ControllerBase
         _userIdentity = userIdentity;
         _mapper = mapper;
     }
-
+    /// <summary>
+    /// Add a new comment
+    /// </summary>
+    /// <param name="slug">Article's title you want to add a comment to </param>
+    /// <param name="createdComment">Comment's body</param>
+    /// <returns>Added comment</returns>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">No user with this username, or no article with this title</response>
+    /// <response code="422">Invalid state of the new comment</response>
+    /// <response code="200">Added comment</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> AddNewComment(string slug, CommentForCreationDto createdComment)
+    public async Task<ActionResult<CommentToReturnDto>> AddNewComment(string slug, CommentForCreationDto createdComment)
     {
         var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (username == null) return Unauthorized();
@@ -52,7 +61,13 @@ public class CommentsController : ControllerBase
         var commentToReturn =await PrepareComment(commentEntity);
         return Ok(new {Comment=commentToReturn});
     }
-    
+    /// <summary>
+    /// Get article's comments
+    /// </summary>
+    /// <param name="slug">Asked article</param>
+    /// <returns>Article's comments</returns>
+    /// <response code="404">No article with this title</response>
+    /// <response code="200">Asked comments</response>
     [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -66,10 +81,22 @@ public class CommentsController : ControllerBase
         return Ok(new { Comments = commentsToReturn });
     }
 
+    /// <summary>
+    /// Delete a specific comment
+    /// </summary>
+    /// <param name="slug">article title</param>
+    /// <param name="id">Comment id</param>
+    /// <returns></returns>
+    /// <response code="404">No user with this username, no article with this title, or no comment with this id</response>
+    /// <response code="204">Comment removed</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Try to remove a  comment that does not belong to you</response>
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> RemoveComment(string slug,int id)
     {
         var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
@@ -80,7 +107,7 @@ public class CommentsController : ControllerBase
         if (article == null) return NotFound();
         var comment = await _commentRepository.GetComment(id);
         if (comment == null) return NotFound();
-        if (comment.Username != username) return BadRequest();
+        if (comment.Username != username) return Forbid();
         var validComment = await _commentRepository.DoesArticleHasComment(article.Value, id);
         if (!validComment) return NotFound();
         await _commentRepository.DeleteComment(id);
