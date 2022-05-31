@@ -19,10 +19,21 @@ public class ProfilesController :ControllerBase
         _userRepository = userRepository;
         _userIdentity = userIdentity;
     }
+    /// <summary>
+    /// Get the user's profile
+    /// </summary>
+    /// <param name="username">username of selected user</param>
+    /// <returns>Profile</returns>
+    /// <response code="200">Returns user's profile</response>
+    /// <response code="404">When there is no user with this username</response>
     [AllowAnonymous]
     [HttpGet("{username}",Name = "GetUserProfile")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProfile(string username)
     {
+        var user = await _userRepository.GetUser(username);
+        if (user == null) return NotFound();
         var profile =await _userIdentity.PrepareProfile(HttpContext.User.Identity,username);
         return Ok(profile);
     }
