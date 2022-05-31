@@ -2,7 +2,6 @@ using AutoMapper;
 using Conduit.API.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
-using Conduit.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conduit.API.Controllers;
@@ -21,8 +20,17 @@ public class FavoriteArticlesController : ControllerBase
         _articleRepository = articleRepository;
         _mapper = mapper;
     }
+    /// <summary>
+    /// Favorite an article
+    /// </summary>
+    /// <param name="slug">Article's title to favorite</param>
+    /// <returns>An article</returns>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">User not exist or the article not found</response>
+    /// <response code="200">Article which you favorite </response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> FavoriteArticle(string slug)
     {
