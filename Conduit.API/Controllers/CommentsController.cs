@@ -25,13 +25,22 @@ public class CommentsController : ControllerBase
         _userIdentity = userIdentity;
         _mapper = mapper;
     }
-
+    /// <summary>
+    /// Add a new comment
+    /// </summary>
+    /// <param name="slug">Article's title you want to add a comment to </param>
+    /// <param name="createdComment">Comment's body</param>
+    /// <returns>Added comment</returns>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">No user with this username, or no article with this title</response>
+    /// <response code="422">Invalid state of the new comment</response>
+    /// <response code="200">Added comment</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> AddNewComment(string slug, CommentForCreationDto createdComment)
+    public async Task<ActionResult<CommentToReturnDto>> AddNewComment(string slug, CommentForCreationDto createdComment)
     {
         var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (username == null) return Unauthorized();
