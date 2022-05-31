@@ -37,7 +37,7 @@ public class UserController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCurrentUser()
+    public async Task<ActionResult<UserForReturningDto>> GetCurrentUser()
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (userName == null) return Unauthorized();
@@ -73,7 +73,7 @@ public class UserController : ControllerBase
     [HttpPatch]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto> patchDocument)
+    public async Task<ActionResult<UserForReturningDto>> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto> patchDocument)
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (userName == null) return Unauthorized();
@@ -110,7 +110,7 @@ public class UserController : ControllerBase
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateUser([FromBody] UserForUpdatingDto userForUpdatingDto)
+    public async Task<ActionResult<UserForReturningDto>> UpdateUser([FromBody] UserForUpdatingDto userForUpdatingDto)
     {
         var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
         if (userName == null) return Unauthorized();
