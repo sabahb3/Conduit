@@ -212,7 +212,7 @@ public class ArticlesController : ControllerBase
     /// <response code="204">The article deleted</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="404">There is no user with this username, or no articles with this slug</response>
-    /// <response code="403">Try to update articles that do not belong to you</response>
+    /// <response code="403">Try to update articles that does not belong to you</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

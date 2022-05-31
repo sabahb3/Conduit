@@ -81,10 +81,22 @@ public class CommentsController : ControllerBase
         return Ok(new { Comments = commentsToReturn });
     }
 
+    /// <summary>
+    /// Delete a specific comment
+    /// </summary>
+    /// <param name="slug">article title</param>
+    /// <param name="id">Comment id</param>
+    /// <returns></returns>
+    /// <response code="404">No user with this username, no article with this title, or no comment with this id</response>
+    /// <response code="204">Comment removed</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Try to remove a  comment that does not belong to you</response>
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> RemoveComment(string slug,int id)
     {
         var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
@@ -95,7 +107,7 @@ public class CommentsController : ControllerBase
         if (article == null) return NotFound();
         var comment = await _commentRepository.GetComment(id);
         if (comment == null) return NotFound();
-        if (comment.Username != username) return BadRequest();
+        if (comment.Username != username) return Forbid();
         var validComment = await _commentRepository.DoesArticleHasComment(article.Value, id);
         if (!validComment) return NotFound();
         await _commentRepository.DeleteComment(id);
