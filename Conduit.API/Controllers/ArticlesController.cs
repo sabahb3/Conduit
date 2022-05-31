@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AutoMapper;
 using Conduit.API.Helper;
 using Conduit.API.ResourceParameters;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Conduit.API;
@@ -30,9 +28,16 @@ public class ArticlesController : ControllerBase
         _identity = identity;
     }
 
+    /// <summary>
+    /// Get Conduit' articles 
+    /// </summary>
+    /// <param name="articleResourceParameter">Filtering articles base on tag, author, favorited by user, and asked page</param>
+    /// <returns>Asked articles</returns>
+    /// <response code="200">Returns list of articles</response>
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetArticles([FromQuery] ArticleResourceParameter? articleResourceParameter)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ArticleToReturnDto>>> GetArticles([FromQuery] ArticleResourceParameter? articleResourceParameter)
     {
         var articles = await _articleRepository.GetArticles(_articleRepository.Articles, articleResourceParameter);
         var articlesToReturn = await PrepareArticles(articles);
