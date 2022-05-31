@@ -61,7 +61,13 @@ public class CommentsController : ControllerBase
         var commentToReturn =await PrepareComment(commentEntity);
         return Ok(new {Comment=commentToReturn});
     }
-    
+    /// <summary>
+    /// Get article's comments
+    /// </summary>
+    /// <param name="slug">Asked article</param>
+    /// <returns>Article's comments</returns>
+    /// <response code="404">No article with this title</response>
+    /// <response code="200">Asked comments</response>
     [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
