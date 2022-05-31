@@ -38,7 +38,18 @@ public class ProfilesController :ControllerBase
         return Ok(profile);
     }
 
+    /// <summary>
+    /// Follow a user
+    /// </summary>
+    /// <param name="followerName">username of the user you want to follow</param>
+    /// <returns>Follower's profile</returns>
+    /// <response code="200">Returns Follower's profile</response>
+    /// <response code="404">No user with the provided username</response>
+    /// <response code="401">Unauthorized user</response>
     [HttpPost("{followerName}/follow")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> FollowUser(string followerName)
     {
         var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
