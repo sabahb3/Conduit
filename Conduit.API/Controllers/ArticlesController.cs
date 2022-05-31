@@ -153,11 +153,35 @@ public class ArticlesController : ControllerBase
         var articleToReturn =await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
-
+    /// <summary>
+    /// Update an article
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <param name="patchDocument">The set of operations to apply on the article</param>
+    /// <returns>updated article</returns>
+    /// <remarks>
+    ///     Sample Request : This will update article's title
+    ///     ```
+    ///     [
+    ///     {
+    ///     "op": "replace",
+    ///     "path": "/title",
+    ///     "value": "Updated title"
+    ///     }
+    ///     ]
+    ///     ```
+    /// </remarks>
+    /// <response code="200">Update an article</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">There is no user with this username, or no articles with this slug</response>
+    /// <response code="422">Invalid state for updated article</response>
+    /// <response code="403">Try to update articles that do not belong to you</response>
     [HttpPatch("{slug}")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> PartialUpdate(string slug,
         JsonPatchDocument<ArticleForUpdatingDto> patchDocument)
     {
@@ -167,7 +191,7 @@ public class ArticlesController : ControllerBase
         if (!user) return NotFound();
         var article = await _articleRepository.GetArticle(slug);
         if (article == null) return NotFound();
-        if (article.Username != username) return BadRequest();
+        if (article.Username != username) return Forbid();
         var articleToUpdate = _mapper.Map<ArticleForUpdatingDto>(article);
         patchDocument.ApplyTo(articleToUpdate);
         if (!TryValidateModel((articleToUpdate)))
