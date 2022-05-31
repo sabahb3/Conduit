@@ -94,6 +94,11 @@ public class ArticlesController : ControllerBase
         return Ok(new { article = articleToReturn });
     }
 
+    /// <summary>
+    /// Create new article
+    /// </summary>
+    /// <param name="createdArticle">Add a new article by giving a title, description, and body. You may add tags</param>
+    /// <returns>Created article</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
