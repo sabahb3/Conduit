@@ -204,7 +204,19 @@ public class ArticlesController : ControllerBase
         var articleToReturn =await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
-
+    /// <summary>
+    /// Delete an article
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <returns>updated article</returns>
+    /// <response code="204">The article deleted</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">There is no user with this username, or no articles with this slug</response>
+    /// <response code="403">Try to update articles that do not belong to you</response>
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [HttpDelete("{slug}")]
     public async Task<ActionResult> DeleteArticle(string slug)
     {
@@ -214,7 +226,7 @@ public class ArticlesController : ControllerBase
         if (!user) return NotFound();
         var article = await _articleRepository.GetArticle(slug);
         if (article == null) return NotFound();
-        if (article.Username != username) return BadRequest();
+        if (article.Username != username) return Forbid();
         await _articleRepository.RemoveArticle(slug,username);
         await _articleRepository.Save();
         return NoContent();
