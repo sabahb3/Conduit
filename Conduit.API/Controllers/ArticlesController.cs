@@ -99,10 +99,13 @@ public class ArticlesController : ControllerBase
     /// </summary>
     /// <param name="createdArticle">Add a new article by giving a title, description, and body. You may add tags</param>
     /// <returns>Created article</returns>
+    /// <response code="200">Get asked article</response>
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> CreateArticle(ArticleForCreation createdArticle)
     {
         var username = _identity.GetLoggedUser(HttpContext.User.Identity);
@@ -117,10 +120,23 @@ public class ArticlesController : ControllerBase
         return Ok(articleToReturn);
     }
 
+    /// <summary>
+    /// Update an article
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <param name="updatedArticle"></param>
+    /// <returns>updated article</returns>
+    /// <response code="200">Update an article</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">There is no user with this username, or no articles with this slug</response>
+    /// <response code="422">Invalid state for updated article</response>
+    /// <response code="403">Try to update articles that do not belong to you</response>
     [HttpPut("{slug}")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> UpdateArticle(string slug, ArticleForUpdatingDto updatedArticle)
     {
         var username = _identity.GetLoggedUser(HttpContext.User.Identity);
@@ -129,7 +145,7 @@ public class ArticlesController : ControllerBase
         if (!user) return NotFound();
         var article = await _articleRepository.GetArticle(slug);
         if (article == null) return NotFound();
-        if (article.Username != username) return BadRequest();
+        if (article.Username != username) return Forbid();
         if (!TryValidateModel(updatedArticle)) return ValidationProblem(ModelState);
         _mapper.Map(updatedArticle, article);
         await _articleRepository.UpdateArticle(article);
