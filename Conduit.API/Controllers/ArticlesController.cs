@@ -31,7 +31,7 @@ public class ArticlesController : ControllerBase
     /// <summary>
     /// Get Conduit' articles 
     /// </summary>
-    /// <param name="articleResourceParameter">Filtering articles base on tag, author, favorited by user, and asked page</param>
+    /// <param name="articleResourceParameter">Filtering articles based on tag, author, favorited by user, and asked page</param>
     /// <returns>Asked articles</returns>
     /// <response code="200">Returns list of articles</response>
     [HttpGet]
@@ -52,11 +52,19 @@ public class ArticlesController : ControllerBase
             articlesToReturn.Add(await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity));
         return articlesToReturn;
     }
-
-
+    
+    /// <summary>
+    /// Get articles written by users you follow 
+    /// </summary>
+    /// <param name="articleResourceParameter">Filtering articles based on tag, author, favorited by user, and asked page</param>
+    /// <returns>Asked articles</returns>
+    /// <response code="200">Returns list of articles</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">When the token is valid but the user does not exist anymore</response>
     [HttpGet("feed")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ArticleToReturnDto>>> GetFeedArticles([FromQuery] ArticleResourceParameter? articleResourceParameter)
     {
         var username = _identity.GetLoggedUser(HttpContext.User.Identity);
