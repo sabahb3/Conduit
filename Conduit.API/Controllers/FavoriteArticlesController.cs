@@ -45,6 +45,14 @@ public class FavoriteArticlesController : ControllerBase
         var articleToReturn = await article.PrepareArticle(_mapper, _articleRepository, _identity, HttpContext.User.Identity);
         return Ok(articleToReturn);
     }
+    /// <summary>
+    /// Unfavorite an article
+    /// </summary>
+    /// <param name="slug">Article's title to unfavorite</param>
+    /// <returns>An article</returns>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="404">User not exist or the article not found</response>
+    /// <response code="200">Article which you unfavorite </response>
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
