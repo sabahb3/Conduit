@@ -3,8 +3,6 @@ using System.Text;
 using Conduit.API.Helper;
 using Conduit.API.Validators;
 using Conduit.Data;
-using Conduit.Data.IRepositories;
-using Conduit.Data.Repositories;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -101,10 +99,7 @@ builder.Services.AddSwaggerGen(
     }
     );
 builder.Services.AddDbContext<ConduitDbContext>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
-builder.Services.AddTransient<ITagRepository, TagRepository>();
-builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+builder.Services.AddWebRepositories();
 builder.Services.AddTransient(typeof(UserIdentity));
 
 var multiplexer = ConnectionMultiplexer.Connect("localhost");
