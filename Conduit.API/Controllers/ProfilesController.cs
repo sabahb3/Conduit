@@ -1,6 +1,7 @@
 using Conduit.API.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,7 +52,7 @@ public class ProfilesController :ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> FollowUser(string followerName)
     {
-        var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var user = await _userRepository.GetUser(username!);
         if (user == null) return NotFound();
@@ -76,7 +77,7 @@ public class ProfilesController :ControllerBase
     [HttpDelete("{followerName}/follow")]
     public async Task<ActionResult<ProfileDto>> UnfollowUser(string followerName)
     {
-        var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var user = await _userRepository.GetUser(username!);
         if (user == null) return NotFound();

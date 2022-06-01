@@ -4,6 +4,7 @@ using Conduit.API.ResourceParameters;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using Conduit.Domain;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -67,7 +68,7 @@ public class ArticlesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ArticleToReturnDto>>> GetFeedArticles([FromQuery] ArticleResourceParameter? articleResourceParameter)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         if (!await _identity.IsExisted(username)) return NotFound();
         var articles = await _articleRepository.GetFeedArticles(articleResourceParameter,username);
@@ -108,7 +109,7 @@ public class ArticlesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> CreateArticle(ArticleForCreation createdArticle)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         if (!await _identity.IsExisted(username)) return NotFound();
         if (!TryValidateModel(createdArticle)) return ValidationProblem(ModelState);
@@ -139,7 +140,7 @@ public class ArticlesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> UpdateArticle(string slug, ArticleForUpdatingDto updatedArticle)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var user = await _identity.IsExisted(username);
         if (!user) return NotFound();
@@ -185,7 +186,7 @@ public class ArticlesController : ControllerBase
     public async Task<ActionResult<ArticleToReturnDto>> PartialUpdate(string slug,
         JsonPatchDocument<ArticleForUpdatingDto> patchDocument)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var user = await _identity.IsExisted(username);
         if (!user) return NotFound();
@@ -220,7 +221,7 @@ public class ArticlesController : ControllerBase
     [HttpDelete("{slug}")]
     public async Task<ActionResult> DeleteArticle(string slug)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var user = await _identity.IsExisted(username);
         if (!user) return NotFound();

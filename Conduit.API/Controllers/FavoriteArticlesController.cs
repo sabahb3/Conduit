@@ -2,6 +2,7 @@ using AutoMapper;
 using Conduit.API.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conduit.API.Controllers;
@@ -34,7 +35,7 @@ public class FavoriteArticlesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> FavoriteArticle(string slug)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var isExist = await _identity.IsExisted(username);
         if (!isExist) return NotFound();
@@ -58,7 +59,7 @@ public class FavoriteArticlesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<ArticleToReturnDto>> UnfavoriteArticle(string slug)
     {
-        var username = _identity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _identity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var isExist = await _identity.IsExisted(username);
         if (!isExist) return NotFound();

@@ -39,7 +39,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserForReturningDto>> GetCurrentUser()
     {
-        var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var userName = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (userName == null) return Unauthorized();
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
@@ -75,7 +75,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserForReturningDto>> PartialUpdateUser(JsonPatchDocument<UserForUpdatingDto> patchDocument)
     {
-        var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var userName = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (userName == null) return Unauthorized();
         var user = await _userRepository.GetUser(userName!);
         if (user == null) return NotFound();
@@ -112,7 +112,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserForReturningDto>> UpdateUser([FromBody] UserForUpdatingDto userForUpdatingDto)
     {
-        var userName = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var userName = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (userName == null) return Unauthorized();
         if (!TryValidateModel(userForUpdatingDto)) return ValidationProblem(ModelState);
         var user = await _userRepository.GetUser(userName!);

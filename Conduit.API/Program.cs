@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +106,9 @@ builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient(typeof(UserIdentity));
+
+var multiplexer = ConnectionMultiplexer.Connect("localhost");
+builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
