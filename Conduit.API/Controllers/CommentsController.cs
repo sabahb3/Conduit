@@ -3,6 +3,7 @@ using Conduit.API.Helper;
 using Conduit.Data.IRepositories;
 using Conduit.Data.Models;
 using Conduit.Domain;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -42,7 +43,7 @@ public class CommentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentToReturnDto>> AddNewComment(string slug, CommentForCreationDto createdComment)
     {
-        var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var user = await _userIdentity.IsExisted(username);
         if (!user) return NotFound();
@@ -99,7 +100,7 @@ public class CommentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> RemoveComment(string slug,int id)
     {
-        var username = _userIdentity.GetLoggedUser(HttpContext.User.Identity);
+        var username = await _userIdentity.GetLoggedUser(HttpContext.User.Identity,await HttpContext.GetTokenAsync("access_token"));
         if (username == null) return Unauthorized();
         var isExist = await _userIdentity.IsExisted(username);
         if (!isExist) return NotFound();
